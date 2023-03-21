@@ -13,4 +13,21 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:background">@android:color/background_dark</item>
+        <item name="android:searchHintIcon">@drawable/ic_search_white_24dp</item>
+        <item name="android:iconifiedByDefault">false</item>
+        <item name="android:queryBackground">@android:color/transparent</item>
+        <item name="android:submitBackground">@android:color/transparent</item>
+        <item name="android:closeIcon">@drawable/ic_clear_white_24dp</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:imeOptions">actionSearch</item>
+    </style>
+
+    <style name="textAppearanceSmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
 </resources>
