@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@android:color/background_dark">
+    android:paddingBottom="?attr/actionBarSize"
+    >
 
     <SearchView
         android:id="@+id/search_view"
@@ -19,8 +20,16 @@
         android:layout_height="wrap_content"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
-        android:background="@android:color/background_dark"
         android:textColor="@android:color/white"/>
+
+    <Button
+        android:id="@+id/floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="-70dp"
+        android:text="+" />
 
 
 </LinearLayout>

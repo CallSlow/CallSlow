@@ -60,7 +60,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
         photoView.setImageResource(R.drawable.placeholder_contact);
         //photoView.setImageResource(contact.getPhoto()); // ou utiliser une bibliothèque de chargement d'image
         nameView.setText(contact.getName());
-        phoneView.setText(contact.getPhone());
+        phoneView.setText(contact.getMac());
 
         return view;
     }

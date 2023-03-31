@@ -44,15 +44,15 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
 
 
         mContactList = new ArrayList<>();
-        mContactList.add(new Contact("John Doe", "555-1234"));
-        mContactList.add(new Contact("Jane Smith", "555-5678"));
-        mContactList.add(new Contact("Virgo", "555-59965"));
-        mContactList.add(new Contact("Maya", "123-45678"));
-        mContactList.add(new Contact("Daisy", "123-45678"));
-        mContactList.add(new Contact("Athéna", "123-45678"));
-        mContactList.add(new Contact("Cookie", "123-45678"));
-        mContactList.add(new Contact("Poilu", "123-45678"));
-        mContactList.add(new Contact("LéoGarçon", "123-45678"));
+        mContactList.add(new Contact("John Doe", "f8:2e:dd:df:0e:40"));
+        mContactList.add(new Contact("Jane Smith", "58:5a:b6:1c:e2:29"));
+        mContactList.add(new Contact("Virgo", "24:60:87:f6:0a:ae"));
+        mContactList.add(new Contact("Maya", "ad:52:bf:69:7a:9f"));
+        mContactList.add(new Contact("Daisy", "1b:63:09:7a:66:15"));
+        mContactList.add(new Contact("Athéna", "66:bf:8d:dc:25:61"));
+        mContactList.add(new Contact("Cookie", "21:cc:66:fb:ee:9f"));
+        mContactList.add(new Contact("Poilu", "88:05:f3:23:e8:b3"));
+        mContactList.add(new Contact("LéoGarçon", "19:2f:c9:bc:8b:0e"));
 
         mAdapter = new ContactAdapter(getActivity(), mContactList);
         mListView.setAdapter(mAdapter);
