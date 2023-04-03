@@ -1,36 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment"
-    android:id="@+id/conversation_fragment">
+    android:id="@+id/conversation_fragment_receiver"
+    android:orientation="vertical"
+    android:background="@android:color/background_light">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="315dp"
-        android:layout_height="345dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.416"
-        app:srcCompat="@android:drawable/ic_menu_my_calendar"
-        tools:src="@tools:sample/avatars" />
+    <ListView
+        android:id="@+id/conversation_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:background="@android:color/background_light"
+        android:textColor="@android:color/white"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="104dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="23dp"
-        android:text="CONVERSATION"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.094"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.984" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
