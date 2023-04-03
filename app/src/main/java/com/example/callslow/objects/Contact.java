@@ -1,10 +1,10 @@
 package com.example.callslow.objects;
 
 public class Contact {
-    private String nom, tel;
+    private String nom, mac;
 
-    public Contact(String nm, String tl) {
-        nom = nm; tel = tl;
+    public Contact(String nm, String mc) {
+        nom = nm; mac = mc;
     }
 
 
@@ -12,8 +12,8 @@ public class Contact {
         return nom;
     }
 
-    public String getPhone() {
-        return tel;
+    public String getMac() {
+        return mac;
     }
 
     public int getPhoto() {
