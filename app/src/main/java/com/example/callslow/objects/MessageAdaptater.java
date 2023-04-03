@@ -40,7 +40,7 @@ public class MessageAdaptater extends BaseAdapter {
         View view = convertView;
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            view = inflater.inflate(R.layout.item_contact, parent, false);
+            view = inflater.inflate(R.layout.item_conversation_sender_messages, parent, false);
         }
 
         TextView messageContentView = view.findViewById(R.id.text_message_sender);
