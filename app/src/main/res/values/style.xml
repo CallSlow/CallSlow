@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyCustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Change la couleur de la barre de statut (status bar) -->
+        <item name="colorPrimaryDark">#6200EE</item>
+        <!-- Change la couleur de la barre d'action (action bar) -->
+        <item name="colorPrimary">#6200EE</item>
+        <!-- Change la couleur du texte dans la barre d'action (action bar text color) -->
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <!-- Change la couleur de fond de la fenêtre -->
+        <item name="android:windowBackground">@android:color/white</item>
+        <!-- Change la couleur de fond des boutons -->
+        <item name="colorAccent">#6200EE</item>
+        <!-- Change la couleur de fond des vues de texte éditable -->
+        <item name="android:editTextColor">#000000</item>
+    </style>
+</resources>

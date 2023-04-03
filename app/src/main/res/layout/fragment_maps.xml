@@ -3,22 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:paddingBottom="?attr/actionBarSize"
     android:layout_height="match_parent"
     tools:context=".ui.maps.MapsFragment">
 
     <org.osmdroid.views.MapView
         android:id="@+id/id_map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_form_BAL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+"
+        android:text="📬 +"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="80dp"
-        android:layout_marginRight="16dp" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="16dp"
+        android:textSize="25dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
