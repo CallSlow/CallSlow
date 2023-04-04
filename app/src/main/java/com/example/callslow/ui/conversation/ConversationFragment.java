@@ -36,8 +36,7 @@ public class ConversationFragment extends Fragment {
         Contact sender = new Contact("Mathieu Maes", "555-1234");
         Date sendDate = new Date();
         mMessageList = new ArrayList<Message>();
-        mMessageList.add(new Message("Coucou Basou", sender, receiver, sendDate));
-        mMessageList.add(new Message("Wesh Mathieu", receiver, sender, sendDate));
+        mMessageList.add(new Message("Message émis", sender, receiver, sendDate));
 
         mAdapter = new MessageAdaptater(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
