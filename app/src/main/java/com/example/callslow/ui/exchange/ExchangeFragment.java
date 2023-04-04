@@ -60,4 +60,5 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 }
