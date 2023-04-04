@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="📬 Ajout d'une nouvelle boîte aux lettres"
         android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/text_title"
         android:text="Nom de la boîte aux lettres :"
+        android:textColor="@android:color/darker_gray"
         android:layout_marginTop="20sp"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -30,6 +32,7 @@
         android:layout_below="@id/textView_name"
         android:background="@drawable/edit_text_background"
         android:hint="Entrez un nom"
+        android:textColor="@android:color/darker_gray"
         android:padding="10dp"
         android:textSize="16sp" />
 
@@ -39,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editText_name"
         android:layout_marginTop="10sp"
+        android:textColor="@android:color/darker_gray"
         android:text="Description :"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -51,6 +55,7 @@
         android:background="@drawable/edit_text_background"
         android:hint="Ajoutez des détails"
         android:inputType="textEmailAddress"
+        android:textColor="@android:color/darker_gray"
         android:padding="10dp"
         android:textSize="16sp" />
 
@@ -61,6 +66,7 @@
         android:layout_below="@id/editText_email"
         android:layout_marginTop="10sp"
         android:text="Latitude :"
+        android:textColor="@android:color/darker_gray"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -72,6 +78,7 @@
         android:background="@drawable/edit_text_background"
         android:hint="Entrez la latitude"
         android:inputType="textEmailAddress"
+        android:textColor="@android:color/darker_gray"
         android:padding="10dp"
         android:textSize="16sp" />
 
@@ -82,6 +89,7 @@
         android:layout_below="@id/editText_latitude"
         android:layout_marginTop="10sp"
         android:text="Longitude :"
+        android:textColor="@android:color/darker_gray"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -93,6 +101,7 @@
         android:background="@drawable/edit_text_background"
         android:hint="Entrez la longitude"
         android:inputType="textEmailAddress"
+        android:textColor="@android:color/darker_gray"
         android:padding="10dp"
         android:textSize="16sp" />
 
