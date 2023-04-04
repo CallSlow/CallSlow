@@ -9,24 +9,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+    android:textColor="#FFFFFF">
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#232323"
-            android:text="Échange terminé"
-            android:textSize="35dp"
-            android:padding="10dp"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
     <LinearLayout
         android:id="@+id/LinearLayout2"
@@ -34,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1"
         android:orientation="horizontal"
-        android:layout_margin="15dp">
+        android:layout_margin="15dp"
+        android:textColor="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,9 +37,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Appareil synchronisé"
+                android:text="Appareil Synchronisé !"
                 android:textStyle="bold"
                 android:textColor="#9e00c1"
+                android:textSize="50dp"
+                android:textAlignment="center"
+
                 />
         </LinearLayout>
 
@@ -59,7 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout2"
         android:orientation="horizontal"
-        android:layout_margin="15dp">
+        android:layout_margin="15dp"
+        android:textColor="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,14 +75,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Message envoyés : 12"
-                android:textColor="#000000"
                 />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Message réçus : 12"
-                android:textColor="#000000"
                 />
 
         </LinearLayout>
@@ -105,7 +98,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:textColor="#FFFFFF">
 
             <TextView
                 android:layout_width="match_parent"
@@ -120,7 +114,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Cet appareil est porteur de 85 messages qui doivent être reçus. Cet appareil est porteur de 25 accusés de reception."
-                android:textColor="#000000"
                 />
 
 
@@ -139,7 +132,7 @@
             android:layout_weight="5" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buttonEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
