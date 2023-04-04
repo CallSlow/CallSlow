@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment">
+    tools:context=".ui.settings.SettingsFragment"
+    >
 
     <TextView
         android:id="@+id/textView5"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="88dp"
         android:text="Pseudo"
-        android:textColor="@color/black"
+        android:textColor="@color/colorMasterText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.126"
@@ -63,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Identifiant"
-        android:textColor="@color/black"
+        android:textColor="@color/colorMasterText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.132"
@@ -87,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
         android:text="Emplacement des fichiers"
-        android:textColor="@color/black"
+        android:textColor="@color/colorMasterText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.184"
