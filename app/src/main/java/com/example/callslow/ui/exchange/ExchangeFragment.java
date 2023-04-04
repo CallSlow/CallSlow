@@ -36,9 +36,11 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         View root = binding.getRoot();
 
         mListView = (ListView) root.findViewById(R.id.listView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, possibleNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, possibleNames);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
+
+
 
         return root;
     }
@@ -52,12 +54,10 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Fragment exchangeSynchroFragment = new ExchangeSynchroFragment();
-        /*FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.LinearLayout60, exchangeSynchroFragment).commit();
-        transaction.addToBackStack(null);*/
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().remove(this).commit();
-        fragmentManager.beginTransaction().add(R.id.nav_host_fragment_activity_main, exchangeSynchroFragment).commit();
-
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_activity_main, exchangeSynchroFragment);
+        transaction.setReorderingAllowed(true);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
