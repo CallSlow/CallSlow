@@ -33,7 +33,7 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
         listView = root.findViewById(R.id.list_chat);
         array = new String[20];
         for(int i = 0; i < 20; i += 1) {
-            array[i] = "Contact N°"+i;
+            array[i] = "Chat N°"+i;
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, array);
         listView.setAdapter(adapter);
