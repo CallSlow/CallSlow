@@ -1,10 +1,16 @@
 package com.example.callslow;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -14,11 +20,15 @@ import com.example.callslow.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_ENABLE_BT = 1;
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("---- Début du programme ---- \n");
+        this.checkBluetooth();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -32,6 +42,32 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+    }
+
+    protected void checkBluetooth() {
+
+        System.out.println("--- Début CheckBluetooth --- \n");
+        // Initialiser un  BluetoothManager pour pouvoir utiliser les fonctions Bluetooth
+        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+        if (bluetoothAdapter == null) {
+            // Fermer l'application => Mettre une fenêtre d'erreur
+        }
+
+        System.out.println(bluetoothAdapter.toString());
+
+        // isEnabled => regarde si le Bluetooth est activé
+        if (!bluetoothAdapter.isEnabled()) {
+            System.out.println("--- Pas de Bluetooth ---");
+            Intent bluetoothPicker = new Intent("android.provider.Settings.ACTION_BLUETOOTH_SETTINGS"); //  A BOUGER
+            startActivity(bluetoothPicker);
+        }
+        else {
+            System.out.println("Bluetooth yiyoug)àrsdegseser");
+        }
+
+
     }
 
 }
