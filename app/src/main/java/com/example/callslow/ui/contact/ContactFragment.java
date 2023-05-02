@@ -17,6 +17,7 @@ import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentContactBinding;
 import com.example.callslow.objects.Contact;
 import com.example.callslow.objects.ContactAdapter;
+import com.example.callslow.objects.Contacts;
 
 import java.util.ArrayList;
 
@@ -42,17 +43,11 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         mSearchView = root.findViewById(R.id.search_view);
         mSearchView.setOnQueryTextListener(this);
 
+        Contacts.getInstance().init(getContext());
+        mContactList = Contacts.getInstance().getContacts();
 
-        mContactList = new ArrayList<>();
-        mContactList.add(new Contact("John Doe", "f8:2e:dd:df:0e:40"));
-        mContactList.add(new Contact("Jane Smith", "58:5a:b6:1c:e2:29"));
-        mContactList.add(new Contact("Virgo", "24:60:87:f6:0a:ae"));
-        mContactList.add(new Contact("Maya", "ad:52:bf:69:7a:9f"));
-        mContactList.add(new Contact("Daisy", "1b:63:09:7a:66:15"));
-        mContactList.add(new Contact("Athéna", "66:bf:8d:dc:25:61"));
-        mContactList.add(new Contact("Cookie", "21:cc:66:fb:ee:9f"));
-        mContactList.add(new Contact("Poilu", "88:05:f3:23:e8:b3"));
-        mContactList.add(new Contact("LéoGarçon", "19:2f:c9:bc:8b:0e"));
+        //mContactList = new ArrayList<>();
+
 
         mAdapter = new ContactAdapter(getActivity(), mContactList);
         mListView.setAdapter(mAdapter);

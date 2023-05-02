@@ -1,13 +1,18 @@
 package com.example.callslow.objects;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.callslow.R;
@@ -61,6 +66,49 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
         //photoView.setImageResource(contact.getPhoto()); // ou utiliser une bibliothèque de chargement d'image
         nameView.setText(contact.getName());
         phoneView.setText(contact.getMac());
+
+        // Ajouter un écouteur de clic long sur l'élément de la liste
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // Afficher le menu contextuel flottant ici
+                PopupMenu popupMenu = new PopupMenu(mContext, v, Gravity.CENTER);
+                popupMenu.getMenuInflater().inflate(R.menu.contacts_ctx_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_edit:
+                                // Code à exécuter lorsque l'utilisateur sélectionne l'option 1
+                                return true;
+                            case R.id.action_delete:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                                builder.setTitle("Confirmation");
+                                builder.setMessage("Êtes-vous sûr de vouloir supprimer cet élément ?");
+
+                                builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {}
+                                });
+
+                                // Ajouter un bouton "OK" qui ferme la boîte de dialogue et effectue l'action de confirmation
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                                builder.show();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+                return true;
+            }
+        });
 
         return view;
     }
