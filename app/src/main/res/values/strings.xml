@@ -5,4 +5,11 @@
     <string name="title_maps">Maps</string>
     <string name="title_contact">Contact</string>
     <string name="title_exchange">Echange</string>
+    <string name="remplissez_le_formulaire_ci_dessous">Remplissez le formulaire ci-dessous</string>
+    <string name="champ_1">Titre</string>
+    <string name="champ_2">Description</string>
+    <string name="champ_3">Latitude</string>
+    <string name="champ_4">Longitude</string>
+    <string name="envoyer">Envoyer</string>
+    <string name="x">X</string>
 </resources>
