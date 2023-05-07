@@ -16,6 +16,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.callslow.R;
+import com.example.callslow.ui.contact.ContactFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,20 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
                                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        // récupération du mac du contact
+                                        Contact contact = mFilteredContactList.get(position);
+                                        try {
+                                            if (Contacts.getInstance().deleteContact(contact)) {
+                                                ContactFragment.getInstance().alertBox("Supression", "Contact Supprimé !");
+                                            } else {
+                                                ContactFragment.getInstance().alertBox("Supression", "Impossible de supprimer le contact.");
+                                            }
 
+                                        } catch (Exception e) {
+                                            ContactFragment.getInstance().alertBox("Supression", "Impossible de supprimer le contact (crash) : \n"+e.getMessage());
+                                            //throw new RuntimeException(e);
+                                        }
+                                        ContactFragment.getInstance().refresh();
                                     }
                                 });
                                 builder.show();
@@ -143,5 +157,11 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public void updateContactList(List<Contact> contactList) {
+        mContactList = contactList;
+        mFilteredContactList = contactList;
+        notifyDataSetChanged();
     }
 }

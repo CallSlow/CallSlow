@@ -139,4 +139,22 @@ public class Contacts extends Application {
         return true;
     }
 
+    public boolean deleteContact(Contact ct) throws Exception {
+        if (contact_list.contains(ct)) {
+            contact_list.remove(ct);
+            writeFile();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteContact(String mac) throws Exception {
+        for (Contact c : contact_list) {
+            if (c.getMac().equals(mac)) {
+                return deleteContact(c);
+            }
+        }
+        return false;
+    }
+
 }

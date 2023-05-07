@@ -47,8 +47,12 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
 
     private FragmentContactBinding binding;
 
+    private static ContactFragment instance;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        instance = this;
+
         ContactViewModel contactViewModel =
                 new ViewModelProvider(this).get(ContactViewModel.class);
 
@@ -78,9 +82,14 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         return root;
     }
 
-    private void refresh() {
-        mAdapter = new ContactAdapter(getActivity(), mContactList);
-        mListView.setAdapter(mAdapter);
+    public void refresh() {
+        /*mAdapter = new ContactAdapter(getActivity(), mContactList);
+        mListView.setAdapter(mAdapter);*/
+        mAdapter.updateContactList(Contacts.getInstance().getContacts());
+    }
+
+    public static ContactFragment getInstance() {
+        return instance;
     }
 
     @Override
@@ -101,7 +110,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         return false;
     }
 
-    private void alertBox(String title, String content) {
+    public void alertBox(String title, String content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder.setTitle(title)
                 .setMessage(content)
