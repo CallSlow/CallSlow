@@ -5,7 +5,7 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/text_title"
+        android:id="@+id/popup_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="🧑 Ajout d'un nouveau contact"
@@ -18,7 +18,7 @@
         android:id="@+id/textView_Contactname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_title"
+        android:layout_below="@id/popup_title"
         android:text="Nom du contact :"
         android:textColor="@android:color/darker_gray"
         android:layout_marginTop="20sp"

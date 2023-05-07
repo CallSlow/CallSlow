@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ContactAdapter extends BaseAdapter implements Filterable {
 
-    private Context mContext;
+    private final Context mContext;
     private List<Contact> mContactList;
     private List<Contact> mFilteredContactList;
 
@@ -80,7 +80,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_edit:
-                                // Code à exécuter lorsque l'utilisateur sélectionne l'option 1
+                                // Code à exécuter lorsque l'utilisateur sélectionne l'option editer
+
+
                                 return true;
                             case R.id.action_delete:
                                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

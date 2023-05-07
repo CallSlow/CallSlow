@@ -1,7 +1,7 @@
 package com.example.callslow.ui.contact;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,7 +18,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -28,11 +27,12 @@ import com.example.callslow.objects.Contact;
 import com.example.callslow.objects.ContactAdapter;
 import com.example.callslow.objects.Contacts;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class ContactFragment extends Fragment implements SearchView.OnQueryTextListener , View.OnClickListener {
 
-    private ListView mListView;
     private SearchView mSearchView;
     private ContactAdapter mAdapter;
     private ArrayList<Contact> mContactList;
@@ -47,6 +47,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
 
     private FragmentContactBinding binding;
 
+    @SuppressLint("StaticFieldLeak")
     private static ContactFragment instance;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,7 +60,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         binding = FragmentContactBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mListView = root.findViewById(R.id.contact_list);
+        ListView mListView = root.findViewById(R.id.contact_list);
         mSearchView = root.findViewById(R.id.search_view);
         mSearchView.setOnQueryTextListener(this);
 
@@ -125,7 +126,14 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     public void createContact() {
-        Contact newContact = new Contact(nameInput.getText().toString(),macInput.getText().toString());
+        // d'abord on vérifie la concordance pour que ça match bien le format nécessaire
+        String answer = macInput.getText().toString();
+        if (!answer.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")) {
+            alertBox("Adrese MAC Invalide", "Le format de l'adresse MAC saisie est invalide.");
+            return;
+        }
+
+        Contact newContact = new Contact(nameInput.getText().toString(),answer);
         try {
             if (!Contacts.getInstance().addContact(newContact)) {
                 alertBox("Contact Existant", "Le contact que vous essayer d'entrer existe déjà !");
@@ -139,7 +147,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         //
     }
 
-    private void createPopup() {
+    private void createAddPopup() {
         // Créer une vue qui contient le formulaire
         View popupView = LayoutInflater.from(requireContext()).inflate(R.layout.contacts_popup, null);
 
@@ -149,6 +157,9 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         //Fond de la popup blanc
         int color = Color.parseColor("#FFFFFFFF");
         ColorDrawable background = new ColorDrawable(color);
+
+        TextView popTitle = (TextView)  popupView.findViewById(R.id.popup_title);
+        popTitle.setText("\uD83E\uDDD1 Ajout d'un nouveau contact");
 
         createContactBtn = (Button) popupView.findViewById(R.id.button_submitCt);
         createContactBtn.setOnClickListener(this);
@@ -165,7 +176,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
     public void showPopup() {
         // Créer la PopupWindow si elle n'existe pas encore
         if (popupWindow == null) {
-            createPopup();
+            createAddPopup();
         }
         // Afficher la PopupWindow
         popupWindow.showAtLocation(mSearchView, Gravity.CENTER, 0, 0);
