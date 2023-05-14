@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         if (!bluetoothAdapter.isEnabled()) {
 
           // Au cas où ça ne marche pas, rajouter la ligne ci-dessous
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 1);
+           ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, 1);
 
-           if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT)) {
+           if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH)) {
                 System.out.println("--- Pas de Bluetooth ---");
-                Intent bluetoothPicker = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE); //  A BOUGER
+                Intent bluetoothPicker = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 activityResultLauncher.launch(bluetoothPicker);
             }
         }
