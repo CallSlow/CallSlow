@@ -67,9 +67,6 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         }
     };
 
-
-    // ArrayList prenoms = new ArrayList {"Pixel 4", "SlowChatBox Lille", "Pixel 4", "SlowChatBox Hellemmes"};
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ExchangeViewModel exchangeViewModel = new ViewModelProvider(this).get(ExchangeViewModel.class);
@@ -95,7 +92,10 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
     @SuppressLint("MissingPermission")
     private void startDiscovery() {
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
         getActivity().registerReceiver(broadcastReceiver, filter);
 
         devicesList.clear();
@@ -108,8 +108,6 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         }
 
     }
-
-
 
     @SuppressLint("MissingPermission")
     @Override

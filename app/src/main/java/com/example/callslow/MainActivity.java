@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
         BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
         if (bluetoothAdapter == null) {
-            // Fermer l'application => Mettre une fenêtre d'erreur
+            Toast.makeText(this, "Bluetooth non activé, fermeture de l'application", Toast.LENGTH_SHORT).show();
         }
 
         // isEnabled => regarde si le Bluetooth est activé
