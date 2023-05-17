@@ -1,18 +1,33 @@
 package com.example.callslow.objects;
 
+import android.annotation.SuppressLint;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Message {
-    String content;
-    Contact sender, receiver;
+    String content, senderMac, receiverMac;
     Date sendingDate;
 
-    public Message(String content, Contact sender, Contact receiver, Date sendingDate) {
+    public Message(String content, String senderMac, String receiverMac, Date sendingDate) {
         this.content = content;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.senderMac = senderMac;
+        this.receiverMac = receiverMac;
         this.sendingDate = sendingDate;
     }
+
+    @SuppressLint("SimpleDateFormat")
+    public Message(JSONObject obj) throws JSONException, ParseException {
+        content = obj.getString("name");
+        senderMac = obj.getString("senderMac");
+        receiverMac = obj.getString("receiverMac");
+        sendingDate = new SimpleDateFormat("dd/MM/yyyy").parse(obj.getString("date"));
+    }
+
 
     public String getContent() {
         return content;
@@ -22,20 +37,20 @@ public class Message {
         this.content = content;
     }
 
-    public Contact getSender() {
-        return sender;
+    public String getSenderMac() {
+        return senderMac;
     }
 
-    public void setSender(Contact sender) {
-        this.sender = sender;
+    public void setSenderMac(String senderMac) {
+        this.senderMac = senderMac;
     }
 
-    public Contact getReceiver() {
-        return receiver;
+    public String getReceiverMac() {
+        return receiverMac;
     }
 
-    public void setReceiver(Contact receiver) {
-        this.receiver = receiver;
+    public void setReceiverMac(String receiverMac) {
+        this.receiverMac = receiverMac;
     }
 
     public Date getSendingDate() {
@@ -44,5 +59,15 @@ public class Message {
 
     public void setSendingDate(Date sendingDate) {
         this.sendingDate = sendingDate;
+    }
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("content", content);
+        obj.put("senderMac", senderMac);
+        obj.put("receiverMac", receiverMac);
+        obj.put("sendingDate", sendingDate);
+
+        return obj;
     }
 }

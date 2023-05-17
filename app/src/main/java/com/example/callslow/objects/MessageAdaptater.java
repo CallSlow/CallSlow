@@ -47,10 +47,10 @@ public class MessageAdaptater extends BaseAdapter {
         TextView senderNameView = view.findViewById(R.id.text_user_sender);
 
         Message message = mMessageList.get(position);
-        Contact sender = message.getSender();
+        //Contact sender = message.getSender();
 
         messageContentView.setText(message.getContent());
-        senderNameView.setText(sender.getName());
+        senderNameView.setText(message.getSenderMac());
 
         return view;
     }

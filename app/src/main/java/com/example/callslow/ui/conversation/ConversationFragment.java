@@ -36,7 +36,7 @@ public class ConversationFragment extends Fragment {
         Contact sender = new Contact("Mathieu Maes", "555-1234");
         Date sendDate = new Date();
         mMessageList = new ArrayList<Message>();
-        mMessageList.add(new Message("Message émis", sender, receiver, sendDate));
+        mMessageList.add(new Message("Message émis", sender.getMac(), receiver.getMac(), sendDate));
 
         mAdapter = new MessageAdaptater(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
