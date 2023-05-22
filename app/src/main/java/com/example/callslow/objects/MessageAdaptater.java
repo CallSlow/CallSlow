@@ -1,6 +1,7 @@
 package com.example.callslow.objects;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,21 +38,37 @@ public class MessageAdaptater extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            view = inflater.inflate(R.layout.item_conversation_sender_messages, parent, false);
-        }
-
-        TextView messageContentView = view.findViewById(R.id.text_message_sender);
-        TextView senderNameView = view.findViewById(R.id.text_user_sender);
-
         Message message = mMessageList.get(position);
-        //Contact sender = message.getSender();
 
-        messageContentView.setText(message.getContent());
-        senderNameView.setText(message.getSenderMac());
+        View view = convertView;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        if (message.getSenderMac().equals("555-1234")) {
 
+            view = inflater.inflate(R.layout.item_conversation_receiver_messages, parent, false);
+
+
+            TextView messageContentView = view.findViewById(R.id.text_message_receiver);
+            //TextView senderNameView = view.findViewById(R.id.text_user_sender);
+
+
+            //Contact sender = message.getSender();
+
+            messageContentView.setText(message.getContent());
+            //senderNameView.setText(message.getSenderMac());
+        } else {
+
+            view = inflater.inflate(R.layout.item_conversation_sender_messages, parent, false);
+
+
+            TextView messageContentView = view.findViewById(R.id.text_message_sender);
+            TextView senderNameView = view.findViewById(R.id.text_user_sender);
+
+
+            //Contact sender = message.getSender();
+
+            messageContentView.setText(message.getContent());
+            senderNameView.setText(message.getSenderMac());
+        }
         return view;
     }
 

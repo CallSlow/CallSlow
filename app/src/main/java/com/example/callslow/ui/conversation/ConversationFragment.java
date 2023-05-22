@@ -32,11 +32,16 @@ public class ConversationFragment extends Fragment {
 
         mListView = root.findViewById(R.id.conversation_list);
 
-        Contact receiver = new Contact("Basile Chevalier", "555-1234");
-        Contact sender = new Contact("Mathieu Maes", "555-1234");
+        Contact receiver = new Contact("Basile Chevalier", "555-1233");
+        Contact me = new Contact("Mathieu Maes", "555-1234");
         Date sendDate = new Date();
+        Date sendDate2 = new Date();
         mMessageList = new ArrayList<Message>();
-        mMessageList.add(new Message("Message émis", sender.getMac(), receiver.getMac(), sendDate));
+        mMessageList.add(new Message("Message émis", receiver.getMac(), me.getMac(), sendDate2));
+        mMessageList.add(new Message("Message émis par moi", me.getMac(), receiver.getMac(), sendDate));
+        mMessageList.add(new Message("Message émis par moi 2", me.getMac(), receiver.getMac(), sendDate));
+        mMessageList.add(new Message("Message émis par mon ami 2", receiver.getMac(), me.getMac(), sendDate2));
+        mMessageList.add(new Message("Message émis par mon ami 3", receiver.getMac(), me.getMac(), sendDate2));
 
         mAdapter = new MessageAdaptater(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
