@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentConversationBinding;
 import com.example.callslow.objects.Contact;
-import com.example.callslow.objects.ContactAdapter;
 import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdaptater;
 

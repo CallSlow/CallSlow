@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentChatBinding;
-import com.example.callslow.ui.contact.ContactFragment;
 import com.example.callslow.ui.conversation.ConversationFragment;
 
 public class ChatFragment extends Fragment implements AdapterView.OnItemClickListener {

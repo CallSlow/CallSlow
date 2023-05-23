@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class Messages extends Application {
 
-    private final String CONTACT_FILE = "messages.json";
+    private final String MESSAGE_FILE = "messages.json";
 
     private ArrayList<Message> message_list = new ArrayList<>();
     private JSONObject message_json;
@@ -41,13 +41,13 @@ public class Messages extends Application {
             message_json = new JSONObject(json);
 
             try {
-                JSONArray array = message_json.getJSONArray("contacts");
+                JSONArray array = message_json.getJSONArray("messages");
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject msg = array.getJSONObject(i);
                     try {
                         message_list.add(new Message(msg));
                     } catch (Exception e) {
-                        System.err.println("Impossible d'importer le Message : " + e.getMessage());
+                        System.err.println("Impossible d'importer le message : " + e.getMessage());
                     }
                 }
 
@@ -66,7 +66,7 @@ public class Messages extends Application {
         String json = "";
 
         try {
-            FileInputStream fileInputStream = context.openFileInput(CONTACT_FILE);
+            FileInputStream fileInputStream = context.openFileInput(MESSAGE_FILE);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line;
@@ -80,7 +80,7 @@ public class Messages extends Application {
             json = stringBuilder.toString();
         } catch (FileNotFoundException e) {
             try {
-                FileOutputStream fileOutputStream = context.openFileOutput(CONTACT_FILE, Context.MODE_PRIVATE);
+                FileOutputStream fileOutputStream = context.openFileOutput(MESSAGE_FILE, Context.MODE_PRIVATE);
                 JSONObject jsonObject = new JSONObject();
                 String jsonString = jsonObject.toString();
                 fileOutputStream.write(jsonString.getBytes());
@@ -99,7 +99,6 @@ public class Messages extends Application {
         Writes the file in the memory
      */
     public void writeFile() throws Exception {
-        // préparation de l'array json
         JSONObject obj = new JSONObject();
         JSONArray array = new JSONArray();
         for (Message m : message_list) {
@@ -108,7 +107,7 @@ public class Messages extends Application {
 
         obj.put("messages",array);
 
-        FileOutputStream fileOutputStream = context.openFileOutput(CONTACT_FILE, Context.MODE_PRIVATE);
+        FileOutputStream fileOutputStream = context.openFileOutput(MESSAGE_FILE, Context.MODE_PRIVATE);
         String jsonString = obj.toString();
         fileOutputStream.write(jsonString.getBytes());
         fileOutputStream.close();
@@ -116,10 +115,6 @@ public class Messages extends Application {
 
     }
 
-    /*
-     *  returns contacts in arraylist using a copy of the element.
-     *  to add a Message, you need to use the add method.
-     */
     public ArrayList<Message> getMessages() {
         return new ArrayList<Message>(message_list);
     }

@@ -40,36 +40,30 @@ public class MessageAdaptater extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Message message = mMessageList.get(position);
 
-        View view = convertView;
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        if (message.getSenderMac().equals("555-1234")) {
+        if (message.getSenderMac().equals("555-1234")) { // TODO : Récupérer la MAC locale depuis les settings
 
-            view = inflater.inflate(R.layout.item_conversation_receiver_messages, parent, false);
+            convertView = inflater.inflate(R.layout.item_conversation_receiver_messages, parent, false);
 
 
-            TextView messageContentView = view.findViewById(R.id.text_message_receiver);
+            TextView messageContentView = convertView.findViewById(R.id.text_message_receiver);
             //TextView senderNameView = view.findViewById(R.id.text_user_sender);
-
-
             //Contact sender = message.getSender();
-
             messageContentView.setText(message.getContent());
             //senderNameView.setText(message.getSenderMac());
         } else {
 
-            view = inflater.inflate(R.layout.item_conversation_sender_messages, parent, false);
+            convertView = inflater.inflate(R.layout.item_conversation_sender_messages, parent, false);
 
-
-            TextView messageContentView = view.findViewById(R.id.text_message_sender);
-            TextView senderNameView = view.findViewById(R.id.text_user_sender);
-
+            TextView messageContentView = convertView.findViewById(R.id.text_message_sender);
+            TextView senderNameView = convertView.findViewById(R.id.text_user_sender);
 
             //Contact sender = message.getSender();
 
             messageContentView.setText(message.getContent());
             senderNameView.setText(message.getSenderMac());
         }
-        return view;
+        return convertView;
     }
 
     public Context getmContext() {
