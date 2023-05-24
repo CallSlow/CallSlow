@@ -23,11 +23,26 @@
         </RelativeLayout>
     </ScrollView>
 
-    <EditText
-        android:id="@+id/editTextMessage"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="148dp"
-        android:hint="Saisissez votre message"
-        android:inputType="text" />
+        android:layout_height="157dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editMessage"
+            android:layout_width="311dp"
+            android:layout_height="148dp"
+            android:autofillHints="name"
+            android:hint="Saisissez votre message"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/sendMessageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Valider" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

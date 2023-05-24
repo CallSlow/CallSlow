@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +20,7 @@ import com.example.callslow.objects.MessageAdaptater;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ConversationFragment extends Fragment {
+public class ConversationFragment extends Fragment implements View.OnClickListener {
 
     private FragmentConversationBinding binding;
     private ListView mListView;
@@ -44,6 +46,32 @@ public class ConversationFragment extends Fragment {
 
         mAdapter = new MessageAdaptater(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
+
+        EditText editMessage = root.findViewById(R.id.editMessage);
+        Button sendMessageButton = root.findViewById(R.id.sendMessageButton);
+
+        sendMessageButton.setOnClickListener(this);
+
         return root;
+    }
+
+    public ListView getmListView() {
+        return mListView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Contact me = new Contact("Mathieu Maes", "555-1234");
+        Contact receiver = new Contact("Basile Chevalier", "555-1233");
+        Date sendDate = new Date();
+
+        EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
+
+        String message = editMessage.getText().toString();
+
+        Message newMessage = new Message(message, me.getMac(), receiver.getMac(), sendDate);
+        mAdapter.add(newMessage);
+        mAdapter.notifyDataSetChanged();
+
     }
 }
