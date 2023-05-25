@@ -80,6 +80,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         view = root;
 
 
+
         return root;
     }
 
