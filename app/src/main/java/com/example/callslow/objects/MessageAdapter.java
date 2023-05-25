@@ -47,7 +47,7 @@ public class MessageAdapter extends BaseAdapter {
         Message message = mMessageList.get(position);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        if (message.getSenderMac().equals("555-1234")) { // TODO : Récupérer la MAC locale depuis les settings
+        if (message.getSenderMac().equals("AA:AA:AA:AA:AA:AA")) { // TODO : Récupérer la MAC locale depuis les settings
 
             convertView = inflater.inflate(R.layout.item_conversation_receiver_messages, parent, false);
 

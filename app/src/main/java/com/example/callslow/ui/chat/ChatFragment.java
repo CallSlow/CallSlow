@@ -54,7 +54,13 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Bundle bundle = new Bundle();
+        bundle.putString("name",ChatList.get(i).getName());
+        bundle.putString("mac_adress",ChatList.get(i).getMac());
+
         Fragment conversationFragment = new ConversationFragment();
+        conversationFragment.setArguments(bundle);
+
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.list_fragment, conversationFragment);
         transaction.addToBackStack(null);

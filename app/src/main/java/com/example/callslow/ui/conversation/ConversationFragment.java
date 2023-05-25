@@ -27,6 +27,8 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     private ListView mListView;
     private MessageAdapter mAdapter;
     private ArrayList<Message> mMessageList;
+    private String name;
+    private String mac_adress;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentConversationBinding.inflate(inflater, container, false);
@@ -35,8 +37,20 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         Messages messages = Messages.getInstance();
 
         // Lecture des messages existants
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            name = arguments.getString("name");
+            mac_adress = arguments.getString("mac_adress");
+        }
         messages.readFile();
-        mMessageList = messages.getMessages();
+        mMessageList = new ArrayList<Message>();
+        for (Message msg: messages.getMessages()) {
+            if (msg.getSenderMac().equals("AA:AA:AA:AA:AA:AA") || msg.getReceiverMac().equals("AA:AA:AA:AA:AA:AA")) {// TODO : Récupérer la MAC locale depuis les settings
+                if (msg.getSenderMac().equals(mac_adress) || msg.getReceiverMac().equals(mac_adress)) {
+                    mMessageList.add(msg);
+                }
+            }
+        }
 
         // Ajout des messages sur la view
         mAdapter = new MessageAdapter(getActivity(), mMessageList);
@@ -49,16 +63,14 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         return root;
     }
 
-    //TODO : Récupérer le destinataire depuis la conversation en cours
     @Override
     public void onClick(View v) {
-        Contact me = new Contact("Mathieu Maes", "555-1234");
-        Contact receiver = new Contact("Basile Chevalier", "555-1233");
+        Contact me = new Contact("Mathieu Maes", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
 
         // Initialisation du message à envoyer
         EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
         Messages messages = Messages.getInstance();
-        Message newMessage = new Message(editMessage.getText().toString(), me.getMac(), receiver.getMac(), new Date());
+        Message newMessage = new Message(editMessage.getText().toString(), me.getMac(), mac_adress, new Date());
 
         // Ajout du message dans le fichier
         ArrayList<Message> messageList = messages.getMessages();
