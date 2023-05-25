@@ -32,6 +32,8 @@ public class Contacts extends Application {
     }
 
     public void init(Context ctx) {
+        contact_list = new ArrayList<>();
+
         context = ctx;
 
         String json = readFile();
