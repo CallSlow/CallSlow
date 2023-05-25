@@ -69,9 +69,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
         phoneView.setText(contact.getMac());
 
         // Ajouter un écouteur de clic long sur l'élément de la liste
-        view.setOnLongClickListener(new View.OnLongClickListener() {
+        view.findViewById(R.id.options_menu).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 // Afficher le menu contextuel flottant ici
                 PopupMenu popupMenu = new PopupMenu(mContext, v, Gravity.CENTER);
                 popupMenu.getMenuInflater().inflate(R.menu.contacts_ctx_menu, popupMenu.getMenu());
@@ -122,7 +122,6 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
                     }
                 });
                 popupMenu.show();
-                return true;
             }
         });
 
