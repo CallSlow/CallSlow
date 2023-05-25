@@ -15,7 +15,7 @@ import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentConversationBinding;
 import com.example.callslow.objects.Contact;
 import com.example.callslow.objects.Message;
-import com.example.callslow.objects.MessageAdaptater;
+import com.example.callslow.objects.MessageAdapter;
 import com.example.callslow.objects.Messages;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
     private FragmentConversationBinding binding;
     private ListView mListView;
-    private MessageAdaptater mAdapter;
+    private MessageAdapter mAdapter;
     private ArrayList<Message> mMessageList;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         mMessageList = messages.getMessages();
 
         // Ajout des messages sur la view
-        mAdapter = new MessageAdaptater(getActivity(), mMessageList);
+        mAdapter = new MessageAdapter(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
 
         // Bouton Envoyer

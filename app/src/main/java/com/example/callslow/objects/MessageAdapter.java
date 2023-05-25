@@ -1,7 +1,6 @@
 package com.example.callslow.objects;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,11 @@ import com.example.callslow.R;
 
 import java.util.List;
 
-public class MessageAdaptater extends BaseAdapter {
+public class MessageAdapter extends BaseAdapter {
     private Context mContext;
     private List<Message> mMessageList;
 
-    public MessageAdaptater(Context mContext, List<Message> mMessageList) {
+    public MessageAdapter(Context mContext, List<Message> mMessageList) {
         this.mContext = mContext;
         this.mMessageList = mMessageList;
     }
