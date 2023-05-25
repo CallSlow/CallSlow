@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -68,9 +70,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Lance un serveur pour reception message en arriere plan
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID);
-        Thread thread = new Thread(server);
-        thread.start();
+
+        if (checkAndRequestBluetoothPermissions(this)) {
+            // Commence la découverte des appareils Bluetooth inconnus
+            BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID);
+            Thread thread = new Thread(server);
+            thread.start();
+        } else {
+            System.out.println("Pas toutes les perm dans le MAIN ---");
+        }
     }
 
     protected void checkBluetooth() {
@@ -96,6 +104,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private boolean checkAndRequestBluetoothPermissions(Context context) {
+        // Set allPermissionsGranted to true, assuming all necessary permissions are granted by default
+        boolean allPermissionsGranted = true;
+        // Create an array of strings containing the necessary permissions for Bluetooth discovery
+        String[] permissions = new String[]{android.Manifest.permission.BLUETOOTH, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT};
+        for (String permission : permissions) {
+            // Check if the necessary permission is not granted and set allPermissionsGranted to false
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                // Setting the allPermissionsGranted flag to false
+                allPermissionsGranted = false;
+                // Requesting the necessary permissions for Bluetooth discovery from the user
+                ActivityCompat.requestPermissions((Activity) context, permissions, 1);
+
+                System.out.println("***********  Requesting bluetooth permissions");
+                break;
+            }
+        }
+        return allPermissionsGranted;
     }
 
 }
