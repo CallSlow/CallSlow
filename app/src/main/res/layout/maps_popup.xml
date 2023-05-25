@@ -34,7 +34,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/textView_email"
+        android:id="@+id/textView_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/editText_name"
@@ -44,10 +44,10 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/editText_email"
+        android:id="@+id/editText_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textView_email"
+        android:layout_below="@id/textView_description"
         android:background="@drawable/edit_text_background"
         android:hint="Ajoutez des détails"
         android:inputType="textEmailAddress"
@@ -58,7 +58,7 @@
         android:id="@+id/textView_latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editText_email"
+        android:layout_below="@id/editText_description"
         android:layout_marginTop="10sp"
         android:text="Latitude :"
         android:textSize="18sp"
