@@ -15,13 +15,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentChatBinding;
+import com.example.callslow.objects.ChatAdapter;
+import com.example.callslow.objects.Contact;
+import com.example.callslow.objects.ContactAdapter;
+import com.example.callslow.objects.Contacts;
 import com.example.callslow.ui.conversation.ConversationFragment;
+
+import java.util.ArrayList;
 
 public class ChatFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private FragmentChatBinding binding;
     private String[] array;
     private ListView listView;
+    private ArrayList<Contact> ChatList;
+    private ChatAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ChatViewModel chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -30,11 +38,9 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
         View root = binding.getRoot();
 
         listView = root.findViewById(R.id.list_chat);
-        array = new String[1];
-        for(int i = 0; i < 1; i += 1) {
-            array[i] = "Chat N°"+i;
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, array);
+        Contacts.getInstance().init(getContext());
+        ChatList = Contacts.getInstance().getContacts();
+        adapter = new ChatAdapter(getActivity(), ChatList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
         return root;
