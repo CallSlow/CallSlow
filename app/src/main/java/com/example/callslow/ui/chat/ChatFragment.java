@@ -30,8 +30,8 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
         View root = binding.getRoot();
 
         listView = root.findViewById(R.id.list_chat);
-        array = new String[20];
-        for(int i = 0; i < 20; i += 1) {
+        array = new String[1];
+        for(int i = 0; i < 1; i += 1) {
             array[i] = "Chat N°"+i;
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, array);

@@ -16,6 +16,7 @@ import com.example.callslow.databinding.FragmentConversationBinding;
 import com.example.callslow.objects.Contact;
 import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdaptater;
+import com.example.callslow.objects.Messages;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,48 +31,53 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentConversationBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
         mListView = root.findViewById(R.id.conversation_list);
+        Messages messages = Messages.getInstance();
 
-        Contact receiver = new Contact("Basile Chevalier", "555-1233");
-        Contact me = new Contact("Mathieu Maes", "555-1234");
-        Date sendDate = new Date();
-        Date sendDate2 = new Date();
-        mMessageList = new ArrayList<Message>();
-        mMessageList.add(new Message("Message émis", receiver.getMac(), me.getMac(), sendDate2));
-        mMessageList.add(new Message("Message émis par moi", me.getMac(), receiver.getMac(), sendDate));
-        mMessageList.add(new Message("Message émis par moi 2", me.getMac(), receiver.getMac(), sendDate));
-        mMessageList.add(new Message("Message émis par mon ami 2", receiver.getMac(), me.getMac(), sendDate2));
-        mMessageList.add(new Message("Message émis par mon ami 3", receiver.getMac(), me.getMac(), sendDate2));
+        // Lecture des messages existants
+        messages.readFile();
+        mMessageList = messages.getMessages();
 
+        // Ajout des messages sur la view
         mAdapter = new MessageAdaptater(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
 
-        EditText editMessage = root.findViewById(R.id.editMessage);
+        // Bouton Envoyer
         Button sendMessageButton = root.findViewById(R.id.sendMessageButton);
-
         sendMessageButton.setOnClickListener(this);
 
         return root;
     }
 
-    public ListView getmListView() {
-        return mListView;
-    }
-
+    //TODO : Récupérer le destinataire depuis la conversation en cours
     @Override
     public void onClick(View v) {
         Contact me = new Contact("Mathieu Maes", "555-1234");
         Contact receiver = new Contact("Basile Chevalier", "555-1233");
-        Date sendDate = new Date();
 
+        // Initialisation du message à envoyer
         EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
+        Messages messages = Messages.getInstance();
+        Message newMessage = new Message(editMessage.getText().toString(), me.getMac(), receiver.getMac(), new Date());
 
-        String message = editMessage.getText().toString();
+        // Ajout du message dans le fichier
+        ArrayList<Message> messageList = messages.getMessages();
+        messageList.add(newMessage);
+        messages.setMessages(messageList);
 
-        Message newMessage = new Message(message, me.getMac(), receiver.getMac(), sendDate);
+        // Écriture du message dans le fichier
+        try {
+            messages.writeFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Ajout du message sur la view
         mAdapter.add(newMessage);
         mAdapter.notifyDataSetChanged();
+
+        // Suppression du message écrit de la zone de texte
+        editMessage.setText(null);
 
     }
 }

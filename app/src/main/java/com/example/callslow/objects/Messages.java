@@ -62,7 +62,7 @@ public class Messages extends Application {
         // Init du fichier Message
     }
 
-    private String readFile() {
+    public String readFile() {
         String json = "";
 
         try {
@@ -119,5 +119,7 @@ public class Messages extends Application {
         return new ArrayList<Message>(message_list);
     }
 
-
+    public void setMessages(ArrayList<Message> message_list) {
+        this.message_list = message_list;
+    }
 }
