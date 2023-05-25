@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,8 +35,10 @@ import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentEchangeMainBinding;
 import com.google.android.material.transition.MaterialSharedAxis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ExchangeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -57,8 +62,12 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (!devicesList.contains(device)) {
                     devicesList.add(device);
-                    if(device.getName() != null) {
+                    if (device.getName() != null) {
+                        System.out.println("-");
+                        System.out.println(device);
                         System.out.println(device.getName());
+                        System.out.println(device.getAddress());
+                        System.out.println("-");
                         possibleNames.add(device.getName());
                         mAdapter.notifyDataSetChanged();
                     }
@@ -87,6 +96,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, possibleNames);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+
         return root;
     }
 
@@ -103,6 +113,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         if (checkAndRequestBluetoothPermissions(getContext())) {
             // Commence la découverte des appareils Bluetooth inconnus
             adapter.startDiscovery();
+
         } else {
             System.out.println("Pas toutes les perm ---");
         }
@@ -123,13 +134,30 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Fragment exchangeSynchroFragment = new ExchangeSynchroFragment();
+        String deviceName = possibleNames.get(position);
+        String deviceAddress = devicesList.get(position).getAddress();
+
+        System.out.println(deviceName);
+        System.out.println(deviceAddress);
+
+        // Créer un Bundle pour stocker les informations de l'appareil sélectionné
+        Bundle bundle = new Bundle();
+        bundle.putString("deviceName", deviceName);
+        bundle.putString("deviceAddress", deviceAddress);
+
+        // Créer une instance du fragment destination et lui transmettre les informations
+        Fragment destinationFragment = new ExchangeSynchroFragment();
+        destinationFragment.setArguments(bundle);
+
+        // Redirection vers le fragment Synchronisation
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment_activity_main, exchangeSynchroFragment);
+        transaction.replace(R.id.nav_host_fragment_activity_main, destinationFragment);
         transaction.setReorderingAllowed(true);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+
 
     // method to check and request necessary permissions for Bluetooth discovery
     private boolean checkAndRequestBluetoothPermissions(Context context) {
