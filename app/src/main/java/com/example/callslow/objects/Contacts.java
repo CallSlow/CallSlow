@@ -159,4 +159,15 @@ public class Contacts extends Application {
         return false;
     }
 
+    public boolean replaceContact(Contact oldContact, Contact newContact) throws Exception {
+        int index = contact_list.indexOf(oldContact);
+        if (index == -1) {
+            return addContact(newContact);
+        }
+
+        contact_list.set(index, newContact);
+        writeFile();
+        return true;
+    }
+
 }

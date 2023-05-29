@@ -27,6 +27,19 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
     private List<Contact> mContactList;
     private List<Contact> mFilteredContactList;
 
+
+    private ContactFragment contactFragment;
+
+
+    public ContactAdapter(Context context, List<Contact> contactList, ContactFragment fragment) {
+        mContext = context;
+        mContactList = contactList;
+        mFilteredContactList = contactList;
+        contactFragment = fragment;
+    }
+
+
+
     public ContactAdapter(Context context, List<Contact> contactList) {
         mContext = context;
         mContactList = contactList;
@@ -81,7 +94,8 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
                         switch (item.getItemId()) {
                             case R.id.action_edit:
                                 // Code à exécuter lorsque l'utilisateur sélectionne l'option editer
-
+                                Contact contact = mFilteredContactList.get(position);
+                                contactFragment.showEditPopup(contact.getMac());
 
                                 return true;
                             case R.id.action_delete:
