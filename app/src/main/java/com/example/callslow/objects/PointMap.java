@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 public class PointMap  {
-    private String name,description,latitude,longitude;
+    private final String name,description,latitude,longitude;
 
     public PointMap(String name, String description, String latitude, String longitude) {
         this.name= name;
