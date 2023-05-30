@@ -21,6 +21,7 @@ import com.example.callslow.objects.Messages;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class ConversationFragment extends Fragment implements View.OnClickListener {
 
@@ -80,7 +81,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
         // Initialisation du message à envoyer
         EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
-        Message newMessage = new Message(editMessage.getText().toString(), me.getMac(), mac_adress, new Date());
+        Message newMessage = new Message(UUID.randomUUID(), editMessage.getText().toString(), me.getMac(), mac_adress, new Date());
 
         // Écriture du message dans le fichier
         try {

@@ -3,8 +3,6 @@ package com.example.callslow.objects;
 import android.app.Application;
 import android.content.Context;
 
-import com.example.callslow.objects.Message;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,10 +111,9 @@ public class Messages extends Application {
         fileOutputStream.close();
     }
 
-    public boolean addMessage(Message msg) throws Exception {
+    public void addMessage(Message msg) throws Exception {
         message_list.add(msg);
         writeFile();
-        return true;
     }
 
     public ArrayList<Message> getMessages() {

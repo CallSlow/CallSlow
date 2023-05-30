@@ -8,12 +8,15 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class Message {
+    UUID uuid;
     String content, senderMac, receiverMac;
     Date sendingDate;
 
-    public Message(String content, String senderMac, String receiverMac, Date sendingDate) {
+    public Message(UUID uuid, String content, String senderMac, String receiverMac, Date sendingDate) {
+        this.uuid = uuid;
         this.content = content;
         this.senderMac = senderMac;
         this.receiverMac = receiverMac;
@@ -22,6 +25,7 @@ public class Message {
 
     @SuppressLint("SimpleDateFormat")
     public Message(JSONObject obj) throws JSONException, ParseException {
+        uuid = UUID.fromString(obj.getString("uuid"));
         content = obj.getString("name");
         senderMac = obj.getString("senderMac");
         receiverMac = obj.getString("receiverMac");
@@ -61,8 +65,17 @@ public class Message {
         this.sendingDate = sendingDate;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public JSONObject toJson() throws JSONException {
         JSONObject obj = new JSONObject();
+        obj.put("uuid", uuid);
         obj.put("content", content);
         obj.put("senderMac", senderMac);
         obj.put("receiverMac", receiverMac);
