@@ -1,17 +1,33 @@
 package com.example.callslow.ui.maps;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.callslow.BuildConfig;
 import com.example.callslow.R;
+import com.example.callslow.objects.PointMap;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -20,37 +36,88 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class MapsFragment extends Fragment {
+public class MapsFragment extends Fragment implements OnClickListener {
+
+    //Déclaration de mes variables
     private MapView map;
+    private PopupWindow popupWindow;
+    private View popupView;
+    private final String MAP_FILE = "map.json";
+    private Context context;
+    private ArrayList<PointMap> points_map;
+    private final ArrayList<OverlayItem> items = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //Gestion de la carte
+        //Création d'une vue liée à fragment_maps
+        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+        context = getContext();
+
+        //Récupération de l'id de la carte dans fragment_maps
         map = view.findViewById(R.id.id_map);
-        map.setTileSource(TileSourceFactory.MAPNIK);//render
+
+        //Choix du style de carte (ici on utilise un rendu MAPNIK)
+        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        //Affichage des boutons de zoom et dézoom
+        map.setBuiltInZoomControls(true);
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+
+        //Définition du point de départ lors du lancement de onCreate
         GeoPoint startPoint = new GeoPoint(50.43520447493158, 2.823631946017646); //Point de départ
+
+        //Personnalisation de la carte
         IMapController mapController = map.getController();
-        mapController.setZoom(18.0); //Zoom par défaut de la carte
+
+        //Zoom par défaut de la carte
+        mapController.setZoom(18.0);
+
+        //On applique le point de départ défini au dessus comme le point au centre de la carte
         mapController.setCenter(startPoint);
 
         //Création d'une liste de points
-        ArrayList<OverlayItem> items = new ArrayList<>();
-        OverlayItem home = new OverlayItem("IG2I", "2I", new GeoPoint(50.43520447493158, 2.823631946017646));
-        Drawable m = home.getMarker(0);
-        items.add(home);
-        items.add(new OverlayItem("Appartement", "Mon petit chez moi", new GeoPoint(51.02844401448275, 2.375003122033972)));
 
+        init();
+        for(PointMap p : points_map){
+            items.add(new OverlayItem(p.getName(),p.getDescription(),p.toGeopoint()));
+        }
+
+        reloadMap(items);
+
+        //Référence au bouton + sur la vue
+        Button myButton = (Button) view.findViewById(R.id.button_form_BAL);
+
+        //Listener sur le bouton : lancement de showPopup() lors du clic sur le bouton
+        myButton.setOnClickListener(this);
+
+        final IGeoPoint centre = map.getMapCenter();
+        System.out.println("Latitude : " + centre.getLatitude() + " - Longitude : "+ centre.getLongitude());
+        //retourne 0 et 0
+
+
+        return view;
+    }
+    /**
+     * Recharge la carte avec une liste d'éléments à afficher.
+     * @param items La liste des éléments à afficher sur la carte.
+     */
+    private void reloadMap(ArrayList<OverlayItem> items){
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(requireContext().getApplicationContext(), items, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
+                IGeoPoint markerId = item.getPoint();
+                System.out.println("Latitude marker : " + markerId.getLatitude() + ", longitude marker : " + markerId.getLongitude());
                 return true;
             }
 
@@ -62,12 +129,193 @@ public class MapsFragment extends Fragment {
 
         mOverlay.setFocusItemsOnTap(true);
         map.getOverlays().add(mOverlay);
-        return view;
     }
 
+    /**
+     * Crée la fenêtre popup pour l'ajout d'un nouveau point.
+     */
+    private void createPopup() {
+        // Créer une vue qui contient le formulaire
+        popupView = LayoutInflater.from(requireContext()).inflate(R.layout.maps_popup, null);
 
+        // Créer la PopupWindow
+        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // Référence au bouton d'envoi de formulaire
+        Button sendPoint = (Button) popupView.findViewById(R.id.button_submit);
+        sendPoint.setOnClickListener(this);
 
+        //Fond de la popup blanc
+        int color = Color.parseColor("#FFFFFFFF");
+        ColorDrawable background = new ColorDrawable(color);
 
+        //niveau d'opacité (255 = totalement opaque)
+        background.setAlpha(240);
+        popupWindow.setBackgroundDrawable(background);
+        popupWindow.setFocusable(true);
+    }
 
+    /**
+     * Affiche la fenêtre popup pour l'ajout d'un nouveau point.
+     * @param center Les coordonnées du point au centre de la carte
+     */
+    public void showPopup(GeoPoint center) {
+        // Créer la PopupWindow si elle n'existe pas encore
+        if (popupWindow == null) {
+            createPopup();
+        }
+        // Afficher la PopupWindow
+        popupWindow.showAtLocation(map, Gravity.CENTER, 0, 0);
 
+        EditText latitudeEditText = popupView.findViewById(R.id.editText_latitude);
+        EditText longitudeEditText = popupView.findViewById(R.id.editText_longitude);
+
+        // Remplir les champs avec les valeurs du GeoPoint center
+        latitudeEditText.setText(String.valueOf(center.getLatitude()));
+        longitudeEditText.setText(String.valueOf(center.getLongitude()));
+
+    }
+
+    /**
+     * Cette méthode initialise le système en chargeant les points à partir d'un fichier JSON.
+     * Les points sont stockés dans une liste points_map.
+     * Si une exception se produit lors de l'importation d'un point, un message d'erreur est affiché.
+     */
+    public void init() {
+        points_map = new ArrayList<>();
+        String json = readFile();
+
+        try {
+            JSONObject pointsJSON = new JSONObject(json);
+
+            try {
+                JSONArray array = pointsJSON.getJSONArray("point");
+
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject pm = array.getJSONObject(i);
+                    try {
+                        points_map.add(new PointMap(pm));
+                    } catch (Exception e) {
+                        System.err.println("Impossible d'importer le point : " + e.getMessage());
+                    }
+                }
+
+            } catch (Exception e) {}
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Cette méthode envoie un nouveau point à ajouter.
+     * Elle récupère les informations du point à partir des champs de texte de la popup.
+     * Le nouveau point est ensuite ajouté à la liste points_map.
+     * Un nouvel objet OverlayItem est créé avec les informations du point et ajouté à la liste items.
+     * La carte est rechargée avec les nouveaux éléments.
+     * Enfin, les données sont écrites dans le fichier json.
+     */
+    public void sendPoint() {
+        EditText _name = popupView.findViewById(R.id.editText_name);
+        String name = _name.getText().toString();
+
+        EditText _description = popupView.findViewById(R.id.editText_description);
+        String description = _description.getText().toString();
+
+        EditText _latitude = popupView.findViewById(R.id.editText_latitude);
+        String latitude = _latitude.getText().toString();
+
+        EditText _longitude = popupView.findViewById(R.id.editText_longitude);
+        String longitude = _longitude.getText().toString();
+
+        PointMap newPoint = new PointMap(name,description,latitude,longitude);
+        points_map.add(newPoint);
+        items.add(new OverlayItem(newPoint.getName(),newPoint.getDescription(),newPoint.toGeopoint()));
+        reloadMap(items);
+        try {
+            writeFile();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        //On vide le name et la description du formulaire popup (la latitude et la longitude seront automatiquement remplacés lors d'un nouveau clic sur le bouton)
+        _name.setText("");
+        _description.setText("");
+        popupWindow.dismiss();
+    }
+    /**
+     * Cette méthode lit le contenu du fichier de données JSON et le retourne sous forme de chaîne de caractères.
+     * Si le fichier n'existe pas, un nouveau fichier est créé avec un objet JSON vide.
+     * Si une exception se produit lors de la lecture ou de la création du fichier, elle est affichée.
+     * @return Le contenu du fichier JSON.
+     */
+
+    private String readFile() {
+        String json = "";
+
+        try {
+            FileInputStream fileInputStream = context.openFileInput(MAP_FILE);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            bufferedReader.close();
+            inputStreamReader.close();
+            fileInputStream.close();
+            json = stringBuilder.toString();
+        } catch (FileNotFoundException e) {
+            try {
+                FileOutputStream fileOutputStream = context.openFileOutput(MAP_FILE, Context.MODE_PRIVATE);
+                JSONObject jsonObject = new JSONObject();
+                String jsonString = jsonObject.toString();
+                fileOutputStream.write(jsonString.getBytes());
+                fileOutputStream.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    /**
+     * Cette méthode permet d'écrire les données des points dans un fichier JSON.
+     * Les points sont convertis en objets JSON et stockés dans un tableau JSON.
+     * Ensuite, un objet JSON contenant ce tableau est créé.
+     * Les données JSON sont ensuite écrites dans un fichier avec le nom spécifié.
+     */
+    public void writeFile() throws Exception {
+        // préparation de l'array json
+        JSONObject obj = new JSONObject();
+        JSONArray array = new JSONArray();
+        for (PointMap p : points_map) {
+            array.put(p.toJSON());
+        }
+
+        obj.put("point",array);
+        FileOutputStream fileOutputStream = context.openFileOutput(MAP_FILE, Context.MODE_PRIVATE);
+        String jsonString = obj.toString();
+        fileOutputStream.write(jsonString.getBytes());
+        fileOutputStream.close();
+    }
+
+    @Override
+    //Lors du clic sur le bouton +, affichage de la popup
+    public void onClick(View v) {
+        //System.out.println("on a cliqué sur un bouton");
+        switch(v.getId()){
+            case R.id.button_form_BAL :
+
+                // Obtenir le point central de la carte
+                GeoPoint centerPoint = (GeoPoint) map.getMapCenter();
+                //System.out.println("latitude : " + centerPoint.getLatitude() + ", longitude : " + centerPoint.getLongitude());
+                showPopup(centerPoint);
+                break;
+            case R.id.button_submit :
+                sendPoint();
+                break;
+        }
+    }
 }
