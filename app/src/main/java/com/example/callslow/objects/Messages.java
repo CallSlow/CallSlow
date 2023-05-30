@@ -111,8 +111,12 @@ public class Messages extends Application {
         String jsonString = obj.toString();
         fileOutputStream.write(jsonString.getBytes());
         fileOutputStream.close();
+    }
 
-
+    public boolean addMessage(Message msg) throws Exception {
+        message_list.add(msg);
+        writeFile();
+        return true;
     }
 
     public ArrayList<Message> getMessages() {

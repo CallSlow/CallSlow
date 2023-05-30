@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentConversationBinding;
 import com.example.callslow.objects.Contact;
+import com.example.callslow.objects.Contacts;
 import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdapter;
 import com.example.callslow.objects.Messages;
@@ -63,23 +64,27 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         return root;
     }
 
+    public void createMessage(Message msg) {
+        try {
+            Messages.getInstance().addMessage(msg);
+            Messages.getInstance().writeFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //
+    }
+
     @Override
     public void onClick(View v) {
         Contact me = new Contact("Mathieu Maes", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
 
         // Initialisation du message à envoyer
         EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
-        Messages messages = Messages.getInstance();
         Message newMessage = new Message(editMessage.getText().toString(), me.getMac(), mac_adress, new Date());
-
-        // Ajout du message dans le fichier
-        ArrayList<Message> messageList = messages.getMessages();
-        messageList.add(newMessage);
-        messages.setMessages(messageList);
 
         // Écriture du message dans le fichier
         try {
-            messages.writeFile();
+            this.createMessage(newMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
