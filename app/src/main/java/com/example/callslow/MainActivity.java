@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -96,6 +97,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private boolean checkAndRequestBluetoothPermissions(Context context) {
+        // Set allPermissionsGranted to true, assuming all necessary permissions are granted by default
+        boolean allPermissionsGranted = true;
+        // Create an array of strings containing the necessary permissions for Bluetooth discovery
+        String[] permissions = new String[]{android.Manifest.permission.BLUETOOTH, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT};
+        for (String permission : permissions) {
+            // Check if the necessary permission is not granted and set allPermissionsGranted to false
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                // Setting the allPermissionsGranted flag to false
+                allPermissionsGranted = false;
+                // Requesting the necessary permissions for Bluetooth discovery from the user
+                ActivityCompat.requestPermissions((Activity) context, permissions, 1);
+
+                System.out.println("***********  Requesting bluetooth permissions");
+                break;
+            }
+        }
+        return allPermissionsGranted;
     }
 
 }
