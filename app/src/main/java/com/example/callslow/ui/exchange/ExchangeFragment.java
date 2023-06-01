@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -38,6 +39,7 @@ import com.google.android.material.transition.MaterialSharedAxis;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class ExchangeFragment extends Fragment implements AdapterView.OnItemClickListener {
@@ -47,12 +49,22 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
     protected BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private List<String> possibleNames = new ArrayList<>();
+    private List<String> pairedDeviceNames = new ArrayList<>();
 
     private final List<BluetoothDevice> devicesList = new ArrayList<>();
     private View root;
-    private ListView mListView;
-    private ArrayAdapter<String> mAdapter;
 
+    private TextView mTagConnuView;
+
+    private TextView mTagView;
+    private ListView mListView;
+    private ListView mListView2;
+    private ArrayAdapter<String> mAdapter;
+    private ArrayAdapter<String> mAdapter2;
+
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    // private
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -62,7 +74,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (!devicesList.contains(device)) {
                     devicesList.add(device);
-                    if (device.getName() != null) {
+                    if (device.getName() != null && device.getName().contains("*")) {
                         System.out.println("-");
                         System.out.println(device);
                         System.out.println(device.getName());
@@ -73,9 +85,41 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
                     }
                 }
             }
+
+            /*if(possibleNames.size() == 0){
+                mTagView = root.findViewById(R.id.tagAppareil);
+                mTagView.setText("Aucun appareil trouvé ...");
+            } else {
+                mTagView.setText("");
+            }*/
         }
     };
 
+
+    // Lance un serveur pour reception message en arriere plan
+
+    private List<String> getPairedDeviceNames() {
+        List<String> deviceNames = new ArrayList<>();
+
+        // Récupère les appareils appairés
+        @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
+
+        for (BluetoothDevice device : pairedDevices) {
+            String deviceName = device.getName();
+            if (deviceName != null && deviceName.contains("*")) {
+                deviceNames.add(deviceName);
+            }
+        }
+        /*if(deviceNames.size() == 0){
+            mTagConnuView = root.findViewById(R.id.tagAppareilConnu);
+            mTagConnuView.setText("Aucun appareil trouvé ...");
+        } else {
+            mTagConnuView.setText("");
+        }*/
+
+
+        return deviceNames;
+    }
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ExchangeViewModel exchangeViewModel = new ViewModelProvider(this).get(ExchangeViewModel.class);
@@ -97,6 +141,34 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
+        mListView2 = root.findViewById(R.id.listViewConnu);
+        mAdapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, pairedDeviceNames);
+        mAdapter2.addAll(getPairedDeviceNames());
+        mListView2.setAdapter(mAdapter2);
+        mListView2.setOnItemClickListener(this);
+
+
+        Button BtnServeur;
+        BtnServeur = root.findViewById(R.id.BtnServeur);
+        BtnServeur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID);
+                Thread thread = new Thread(server);
+                thread.start();
+                Toast.makeText(getActivity(), "Start server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); // Temps de visibilité en secondes
+        startActivity(discoverableIntent);
+
+
+
         return root;
     }
 
@@ -109,6 +181,8 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         getActivity().registerReceiver(broadcastReceiver, filter);
 
         devicesList.clear();
+
+        pairedDeviceNames.addAll(getPairedDeviceNames());
 
         if (checkAndRequestBluetoothPermissions(getContext())) {
             // Commence la découverte des appareils Bluetooth inconnus
@@ -130,6 +204,9 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         }
         getActivity().unregisterReceiver(broadcastReceiver);
         binding = null;
+
+        pairedDeviceNames.clear();
+
     }
 
     @Override

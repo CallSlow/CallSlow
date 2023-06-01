@@ -67,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Lance un serveur pour reception message en arriere plan
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID);
         Thread thread = new Thread(server);
-        thread.start();
+        thread.start();*/
     }
 
     protected void checkBluetooth() {

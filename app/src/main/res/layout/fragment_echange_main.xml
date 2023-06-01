@@ -29,11 +29,53 @@
         android:orientation="horizontal"
         android:layout_margin="15dp">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tagServeur"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Serveur : OFF"
+                android:textStyle="bold"
+                android:textAlignment="3"
+                android:textColor="#FF0000"
+                />
+
+            <Button
+                android:id="@+id/BtnServeur"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Appareils enregistés"
+                android:textStyle="bold"
+                android:textColor="#9e00c1"
+                />
+            <TextView
+                android:id="@+id/tagAppareilConnu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="#595959"
+                />
+            <ListView
+                android:id="@+id/listViewConnu"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -44,10 +86,19 @@
                 android:textColor="#9e00c1"
                 />
 
+            <TextView
+                android:id="@+id/tagAppareil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="#595959"
+                />
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="wrap_content"
-                android:layout_height="500dp"
+                android:layout_height="300dp"
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>

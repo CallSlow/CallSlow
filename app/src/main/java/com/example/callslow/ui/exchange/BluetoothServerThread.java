@@ -1,15 +1,22 @@
 package com.example.callslow.ui.exchange;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.pm.PackageManager;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import com.example.callslow.databinding.FragmentEchangeMainBinding;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothServerThread extends Thread {
@@ -50,6 +57,7 @@ public class BluetoothServerThread extends Thread {
             // Une erreur s'est produite lors de l'attente d'une connexion Bluetooth entrante
             e.printStackTrace();
         }
+        System.out.println(" -- Fermeture serveur reception message --");
     }
 
 }
