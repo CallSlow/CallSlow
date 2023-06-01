@@ -15,11 +15,12 @@
             android:id="@+id/conversation_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ListView
                 android:id="@+id/conversation_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@android:color/transparent"/>
+                android:divider="@android:color/transparent" />
         </RelativeLayout>
     </ScrollView>
 
@@ -30,7 +31,8 @@
 
         <EditText
             android:id="@+id/editMessage"
-            android:layout_width="311dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="148dp"
             android:autofillHints="name"
             android:hint="Saisissez votre message"
@@ -38,8 +40,8 @@
 
         <Button
             android:id="@+id/sendMessageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
             android:text="Valider" />
 
     </LinearLayout>
