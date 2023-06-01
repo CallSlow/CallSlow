@@ -38,20 +38,26 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MapsFragment extends Fragment implements OnClickListener {
 
     //Déclaration de mes variables
     private MapView map;
     private PopupWindow popupWindow;
-    private View popupView;
+    private String popupType = "";
+    private View popupViewForm;
+    private View popupViewTuto;
     private final String MAP_FILE = "map.json";
     private Context context;
     private ArrayList<PointMap> points_map;
@@ -63,6 +69,7 @@ public class MapsFragment extends Fragment implements OnClickListener {
         //Création d'une vue liée à fragment_maps
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         context = getContext();
+
 
         //Récupération de l'id de la carte dans fragment_maps
         map = view.findViewById(R.id.id_map);
@@ -86,8 +93,6 @@ public class MapsFragment extends Fragment implements OnClickListener {
         //On applique le point de départ défini au dessus comme le point au centre de la carte
         mapController.setCenter(startPoint);
 
-        //Création d'une liste de points
-
         init();
         for(PointMap p : points_map){
             items.add(new OverlayItem(p.getName(),p.getDescription(),p.toGeopoint()));
@@ -95,11 +100,13 @@ public class MapsFragment extends Fragment implements OnClickListener {
 
         reloadMap(items);
 
-        //Référence au bouton + sur la vue
-        Button myButton = (Button) view.findViewById(R.id.button_form_BAL);
+        //Référence aux boutons sur la vue
+        Button boutonFormulaire = (Button) view.findViewById(R.id.button_form_BAL);
+        Button boutonTuto = (Button) view.findViewById(R.id.button_tuto_BAL);
 
-        //Listener sur le bouton : lancement de showPopup() lors du clic sur le bouton
-        myButton.setOnClickListener(this);
+        //Listener sur les boutons
+        boutonFormulaire.setOnClickListener(this);
+        boutonTuto.setOnClickListener(this);
 
         final IGeoPoint centre = map.getMapCenter();
         System.out.println("Latitude : " + centre.getLatitude() + " - Longitude : "+ centre.getLongitude());
@@ -116,8 +123,8 @@ public class MapsFragment extends Fragment implements OnClickListener {
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(requireContext().getApplicationContext(), items, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                IGeoPoint markerId = item.getPoint();
-                System.out.println("Latitude marker : " + markerId.getLatitude() + ", longitude marker : " + markerId.getLongitude());
+                String markerId = item.getUid();
+                System.out.println("UUIDDDDDDD : " + markerId);
                 return true;
             }
 
@@ -125,6 +132,7 @@ public class MapsFragment extends Fragment implements OnClickListener {
             public boolean onItemLongPress(int index, OverlayItem item) {
                 return false;
             }
+
         });
 
         mOverlay.setFocusItemsOnTap(true);
@@ -134,45 +142,87 @@ public class MapsFragment extends Fragment implements OnClickListener {
     /**
      * Crée la fenêtre popup pour l'ajout d'un nouveau point.
      */
-    private void createPopup() {
-        // Créer une vue qui contient le formulaire
-        popupView = LayoutInflater.from(requireContext()).inflate(R.layout.maps_popup, null);
-
-        // Créer la PopupWindow
-        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        // Référence au bouton d'envoi de formulaire
-        Button sendPoint = (Button) popupView.findViewById(R.id.button_submit);
-        sendPoint.setOnClickListener(this);
-
-        //Fond de la popup blanc
+    private void createPopup(String type) {
+        // Fond de la popup blanc
         int color = Color.parseColor("#FFFFFFFF");
         ColorDrawable background = new ColorDrawable(color);
-
-        //niveau d'opacité (255 = totalement opaque)
+        // Niveau d'opacité (255 = totalement opaque)
         background.setAlpha(240);
+
+        switch (type) {
+            case "formulaire":
+                if (popupWindow != null) {
+                    popupWindow.dismiss();
+                }
+                // Créer la vue de la popup pour le formulaire
+                popupViewForm = LayoutInflater.from(requireContext()).inflate(R.layout.maps_popup, null);
+                // Référence au bouton d'envoi de formulaire
+                Button sendPointForm = popupViewForm.findViewById(R.id.button_submit);
+                sendPointForm.setOnClickListener(this);
+                // Créer la PopupWindow
+                popupWindow = new PopupWindow(popupViewForm, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                // Définir le contenu de la PopupWindow
+                popupWindow.setContentView(popupViewForm);
+                break;
+
+            case "tutoriel":
+                if (popupWindow != null) {
+                    popupWindow.dismiss();
+                }
+                // Créer la vue de la popup pour le tutoriel
+                popupViewTuto = LayoutInflater.from(requireContext()).inflate(R.layout.tuto_maps_popup, null);
+                // Créer la PopupWindow
+                popupWindow = new PopupWindow(popupViewTuto, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                // Définir le contenu de la PopupWindow
+                popupWindow.setContentView(popupViewTuto);
+                break;
+        }
+
+        // Ajouter le OnDismissListener
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                popupWindow = null; // Réinitialiser la variable popupWindow
+            }
+        });
+
         popupWindow.setBackgroundDrawable(background);
         popupWindow.setFocusable(true);
     }
 
     /**
      * Affiche la fenêtre popup pour l'ajout d'un nouveau point.
-     * @param center Les coordonnées du point au centre de la carte
      */
-    public void showPopup(GeoPoint center) {
-        // Créer la PopupWindow si elle n'existe pas encore
-        if (popupWindow == null) {
-            createPopup();
+// Déclarez la variable popupType dans la classe contenant showPopup()
+
+
+    public void showPopup(String type) {
+        System.out.println("Je passe dans le showpopup");
+
+        // Vérifiez si la popup actuelle correspond au type demandé
+        if (popupWindow != null && popupType.equals(type) && popupWindow.isShowing()) {
+            // La popup actuelle est déjà affichée, pas besoin de faire quoi que ce soit
+            return;
         }
-        // Afficher la PopupWindow
+
+        // Créez une nouvelle popup si nécessaire
+        createPopup(type);
+
+        // Affichez la PopupWindow
         popupWindow.showAtLocation(map, Gravity.CENTER, 0, 0);
 
-        EditText latitudeEditText = popupView.findViewById(R.id.editText_latitude);
-        EditText longitudeEditText = popupView.findViewById(R.id.editText_longitude);
+        // Mettez à jour le type de la popup actuelle
+        popupType = type;
 
-        // Remplir les champs avec les valeurs du GeoPoint center
-        latitudeEditText.setText(String.valueOf(center.getLatitude()));
-        longitudeEditText.setText(String.valueOf(center.getLongitude()));
+        if (type.equals("formulaire")) {
+            GeoPoint centerPoint = (GeoPoint) map.getMapCenter();
+            EditText latitudeEditText = popupViewForm.findViewById(R.id.editText_latitude);
+            EditText longitudeEditText = popupViewForm.findViewById(R.id.editText_longitude);
 
+            // Remplissez les champs avec les valeurs du GeoPoint center
+            latitudeEditText.setText(String.valueOf(centerPoint.getLatitude()));
+            longitudeEditText.setText(String.valueOf(centerPoint.getLongitude()));
+        }
     }
 
     /**
@@ -215,21 +265,23 @@ public class MapsFragment extends Fragment implements OnClickListener {
      * Enfin, les données sont écrites dans le fichier json.
      */
     public void sendPoint() {
-        EditText _name = popupView.findViewById(R.id.editText_name);
+        EditText _name = popupViewForm.findViewById(R.id.editText_name);
         String name = _name.getText().toString();
 
-        EditText _description = popupView.findViewById(R.id.editText_description);
+        EditText _description = popupViewForm.findViewById(R.id.editText_description);
         String description = _description.getText().toString();
 
-        EditText _latitude = popupView.findViewById(R.id.editText_latitude);
+        EditText _latitude = popupViewForm.findViewById(R.id.editText_latitude);
         String latitude = _latitude.getText().toString();
 
-        EditText _longitude = popupView.findViewById(R.id.editText_longitude);
+        EditText _longitude = popupViewForm.findViewById(R.id.editText_longitude);
         String longitude = _longitude.getText().toString();
 
-        PointMap newPoint = new PointMap(name,description,latitude,longitude);
+        String uuid = UUID.randomUUID().toString(); // Génère un UUID unique
+
+        PointMap newPoint = new PointMap(uuid,name,description,latitude,longitude);
         points_map.add(newPoint);
-        items.add(new OverlayItem(newPoint.getName(),newPoint.getDescription(),newPoint.toGeopoint()));
+        items.add(new OverlayItem(newPoint.getUuid(),newPoint.getName(),newPoint.getDescription(),newPoint.toGeopoint()));
         reloadMap(items);
         try {
             writeFile();
@@ -304,17 +356,15 @@ public class MapsFragment extends Fragment implements OnClickListener {
     @Override
     //Lors du clic sur le bouton +, affichage de la popup
     public void onClick(View v) {
-        //System.out.println("on a cliqué sur un bouton");
         switch(v.getId()){
-            case R.id.button_form_BAL :
-
-                // Obtenir le point central de la carte
-                GeoPoint centerPoint = (GeoPoint) map.getMapCenter();
-                //System.out.println("latitude : " + centerPoint.getLatitude() + ", longitude : " + centerPoint.getLongitude());
-                showPopup(centerPoint);
+            case R.id.button_form_BAL:
+                showPopup("formulaire");
                 break;
-            case R.id.button_submit :
+            case R.id.button_submit:
                 sendPoint();
+                break;
+            case R.id.button_tuto_BAL:
+                showPopup("tutoriel");
                 break;
         }
     }
