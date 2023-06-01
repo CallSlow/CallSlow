@@ -3,16 +3,20 @@ package com.example.callslow.ui.exchange;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,43 +66,58 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
     private ArrayAdapter<String> mAdapter;
     private ArrayAdapter<String> mAdapter2;
 
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private ArrayList<BluetoothDevice> liste_found = new ArrayList<>();
+
+    private static final UUID MY_UUID = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     // private
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("BRECIEV", "broadcastReciever");
+
             String action = intent.getAction();
+            Log.i("BRECIEV", "Action : " + action);
+
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (!devicesList.contains(device)) {
-                    devicesList.add(device);
-                    if (device.getName() != null && device.getName().contains("*")) {
-                        System.out.println("-");
-                        System.out.println(device);
-                        System.out.println(device.getName());
-                        System.out.println(device.getAddress());
-                        System.out.println("-");
-                        possibleNames.add(device.getName());
-                        mAdapter.notifyDataSetChanged();
-                    }
+
+                if (device != null && device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                    possibleNames.add(device.getName() + " - " + device.getAddress());
+                    liste_found.add(device);
+                    mAdapter.notifyDataSetChanged();
                 }
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                // PASS
             }
 
-            /*if(possibleNames.size() == 0){
-                mTagView = root.findViewById(R.id.tagAppareil);
-                mTagView.setText("Aucun appareil trouvé ...");
-            } else {
-                mTagView.setText("");
-            }*/
         }
     };
+
+
+    private boolean permissionChecker() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH)  != PackageManager.PERMISSION_GRANTED ||
+                //ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_SCAN)  != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.BLUETOOTH_ADMIN)  != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT)  != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 
 
     // Lance un serveur pour reception message en arriere plan
 
     private List<String> getPairedDeviceNames() {
+        // retourne du vide si pas les perms
+        if (!permissionChecker()) {
+            return new ArrayList<String>();
+        }
+
+
         List<String> deviceNames = new ArrayList<>();
 
         // Récupère les appareils appairés
@@ -135,6 +154,17 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
             }
         });
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH);
+        requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_SCAN);
+        requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT);
+        requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_ADMIN);
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        getActivity().registerReceiver(broadcastReceiver, filter);
+
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        getActivity().registerReceiver(broadcastReceiver, filter);
+
 
         mListView = root.findViewById(R.id.listView);
         mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, possibleNames);
@@ -155,17 +185,18 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
             public void onClick(View v) {
 
                 BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID);
+                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID, getView());
+
+                Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); // Temps de visibilité en secondes
+                startActivity(discoverableIntent);
+
                 Thread thread = new Thread(server);
                 thread.start();
                 Toast.makeText(getActivity(), "Start server", Toast.LENGTH_SHORT).show();
 
             }
         });
-
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); // Temps de visibilité en secondes
-        startActivity(discoverableIntent);
 
 
 
@@ -174,24 +205,46 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
     @SuppressLint("MissingPermission")
     private void startDiscovery() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        getActivity().registerReceiver(broadcastReceiver, filter);
-
+        Log.d("DISCOVER", "startDiscovery()");
         devicesList.clear();
 
         pairedDeviceNames.addAll(getPairedDeviceNames());
 
-        if (checkAndRequestBluetoothPermissions(getContext())) {
+        if (true) {
+        //if (checkAndRequestBluetoothPermissions(getContext())) {
             // Commence la découverte des appareils Bluetooth inconnus
-            adapter.startDiscovery();
+            if (adapter.isDiscovering()) {
+                adapter.cancelDiscovery();
+            }
+
+
+            if (!adapter.startDiscovery()) {
+                showErrorDialog("Une erreur est survenue lors de la recherche !");
+            } else {
+                Log.d("DISCOVER", "Découverte des périphériques en cours...");
+            }
+
 
         } else {
-            System.out.println("Pas toutes les perm ---");
+            Log.d("DISCOVER", "Manque de permissions...");
         }
 
+    }
+
+    private void showErrorDialog(String errorMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Erreur")
+                .setMessage(errorMessage)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Code à exécuter lorsque l'utilisateur clique sur le bouton OK
+                        dialog.dismiss(); // Fermer la boîte de dialogue
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @SuppressLint("MissingPermission")
@@ -211,8 +264,21 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String deviceName = possibleNames.get(position);
-        String deviceAddress = devicesList.get(position).getAddress();
+        // on arrête la découverte
+        adapter.cancelDiscovery();
+        BluetoothDevice selected = null;
+
+        for (BluetoothDevice d : liste_found) {
+            if (possibleNames.get(position).contains(d.getAddress())) {
+                selected = d;
+                break;
+            }
+        }
+
+        if (selected == null) {return;}
+
+        String deviceName = selected.getName();
+        String deviceAddress = selected.getAddress();
 
         System.out.println(deviceName);
         System.out.println(deviceAddress);
@@ -241,12 +307,14 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         // Set allPermissionsGranted to true, assuming all necessary permissions are granted by default
         boolean allPermissionsGranted = true;
         // Create an array of strings containing the necessary permissions for Bluetooth discovery
-        String[] permissions = new String[]{android.Manifest.permission.BLUETOOTH, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT};
+        String[] permissions = new String[]{android.Manifest.permission.BLUETOOTH, android.Manifest.permission.BLUETOOTH_SCAN,
+                android.Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT};
         for (String permission : permissions) {
             // Check if the necessary permission is not granted and set allPermissionsGranted to false
             if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 // Setting the allPermissionsGranted flag to false
                 allPermissionsGranted = false;
+                Toast.makeText(context, permission, Toast.LENGTH_SHORT).show();
                 // Requesting the necessary permissions for Bluetooth discovery from the user
                 ActivityCompat.requestPermissions((Activity) context, permissions, 1);
 
