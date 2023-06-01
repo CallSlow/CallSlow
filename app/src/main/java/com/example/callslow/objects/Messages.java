@@ -2,6 +2,7 @@ package com.example.callslow.objects;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,7 @@ public class Messages extends Application {
 
     public void init(Context ctx) {
         context = ctx;
+        message_list = new ArrayList<>();
 
         String json = readFile();
 
@@ -42,6 +44,7 @@ public class Messages extends Application {
                 JSONArray array = message_json.getJSONArray("messages");
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject msg = array.getJSONObject(i);
+                    Log.d("message", msg.toString());
                     try {
                         message_list.add(new Message(msg));
                     } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.example.callslow.ui.conversation;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdapter;
 import com.example.callslow.objects.Messages;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -79,9 +81,14 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         Contact me = new Contact("Mathieu Maes", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
 
+        Date date = new Date();
+
         // Initialisation du message à envoyer
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String formattedDate = dateFormat.format(date);
         EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
-        Message newMessage = new Message(UUID.randomUUID(), editMessage.getText().toString(), me.getMac(), mac_adress, new Date());
+        Message newMessage = new Message(UUID.randomUUID(), editMessage.getText().toString(), me.getMac(), mac_adress, formattedDate);
 
         // Écriture du message dans le fichier
         try {

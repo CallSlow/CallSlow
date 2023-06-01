@@ -12,10 +12,9 @@ import java.util.UUID;
 
 public class Message {
     UUID uuid;
-    String content, senderMac, receiverMac;
-    Date sendingDate;
+    String content, senderMac, receiverMac, sendingDate;
 
-    public Message(UUID uuid, String content, String senderMac, String receiverMac, Date sendingDate) {
+    public Message(UUID uuid, String content, String senderMac, String receiverMac, String sendingDate) {
         this.uuid = uuid;
         this.content = content;
         this.senderMac = senderMac;
@@ -26,10 +25,10 @@ public class Message {
     @SuppressLint("SimpleDateFormat")
     public Message(JSONObject obj) throws JSONException, ParseException {
         uuid = UUID.fromString(obj.getString("uuid"));
-        content = obj.getString("name");
+        content = obj.getString("content");
         senderMac = obj.getString("senderMac");
         receiverMac = obj.getString("receiverMac");
-        sendingDate = new SimpleDateFormat("dd/MM/yyyy").parse(obj.getString("date"));
+        sendingDate = obj.getString("sendingDate");
     }
 
 
@@ -57,11 +56,11 @@ public class Message {
         this.receiverMac = receiverMac;
     }
 
-    public Date getSendingDate() {
+    public String getSendingDate() {
         return sendingDate;
     }
 
-    public void setSendingDate(Date sendingDate) {
+    public void setSendingDate(String sendingDate) {
         this.sendingDate = sendingDate;
     }
 
