@@ -15,7 +15,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +71,8 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
     private ArrayList<BluetoothDevice> liste_found = new ArrayList<>();
 
+    private static final int REQUEST_CODE_PERMISSION = 100;
+
     private static final UUID MY_UUID = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     // private
@@ -97,13 +102,23 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
 
     private boolean permissionChecker() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH)  != PackageManager.PERMISSION_GRANTED ||
-                //ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_SCAN)  != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.BLUETOOTH_ADMIN)  != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT)  != PackageManager.PERMISSION_GRANTED
-        ) {
+        boolean perm1 = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH)  != PackageManager.PERMISSION_GRANTED;
+        boolean perm2 = ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.BLUETOOTH_ADMIN)  != PackageManager.PERMISSION_GRANTED;
+
+        if ( perm1 || perm2) {
+            // fix pour android 12+
             return false;
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_SCAN)  != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT)  != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false;
+            }
+        }
+
+
 
         return true;
     }
@@ -148,15 +163,32 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         // Demande la permission Bluetooth
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
-                startDiscovery();
+                if (permissionChecker()) {
+                    startDiscovery();
+                } else {
+                    Toast.makeText(getActivity(), "Permission Bluetooth refusée (1). Autorisez les permissions et revenez à la vue !!", Toast.LENGTH_SHORT).show();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, REQUEST_CODE_PERMISSION);
+                    }
+
+                }
             } else {
-                Toast.makeText(getActivity(), "Permission Bluetooth refusée", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Permission Bluetooth refusée (2). Autorisez les permissions et revenez à la vue !!", Toast.LENGTH_SHORT).show();
             }
         });
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH);
-        requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_SCAN);
-        requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_SCAN);
+            requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+
+
         requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH_ADMIN);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -219,7 +251,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
 
 
             if (!adapter.startDiscovery()) {
-                showErrorDialog("Une erreur est survenue lors de la recherche !");
+                showErrorDialog("La discovery n'a pu démarrer en raison des autorisations.\nVérifiez les permissions et réessayez");
             } else {
                 Log.d("DISCOVER", "Découverte des périphériques en cours...");
             }
@@ -253,7 +285,8 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         super.onDestroyView();
         // Arrête la découverte des appareils Bluetooth et retire le BroadcastReceiver
         if (adapter != null) {
-            adapter.cancelDiscovery();
+            if (permissionChecker())
+                adapter.cancelDiscovery();
         }
         getActivity().unregisterReceiver(broadcastReceiver);
         binding = null;
