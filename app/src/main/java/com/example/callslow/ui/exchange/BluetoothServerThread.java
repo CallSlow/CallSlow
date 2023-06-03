@@ -67,14 +67,29 @@ public class BluetoothServerThread extends Thread {
                 InputStream inputStream = socket.getInputStream();
                 byte[] buffer = new byte[1024];
                 int bytesRead = inputStream.read(buffer);
-
                 String message = new String(buffer, 0, bytesRead);
-                System.out.println(message);
+                String retour1 = (message != null) ? "1" : "0";
 
                 // Envoie fichier message
                 OutputStream outputStream = socket.getOutputStream();
-                String messageRecu = "Coucou, je suis le serveur";
+                String messageRecu = "Coucou, je suis le fichier message";
                 outputStream.write(messageRecu.getBytes());
+                String retour2 = (messageRecu != null) ? "1" : "0";
+
+                // Réception fichier Boite
+                InputStream inputStream2 = socket.getInputStream();
+                byte[] buffer2 = new byte[1024];
+                int bytesRead2 = inputStream2.read(buffer2);
+                String message2 = new String(buffer2, 0, bytesRead2);
+                System.out.println(message2);
+                String retour3 = (message2 != null) ? "1" : "0";
+
+                // Envoie fichier Boite
+                OutputStream outputStream2 = socket.getOutputStream();
+                String messageRecu2 = "Coucou, je suis le fichier boite";
+                outputStream2.write(messageRecu2.getBytes());
+                String retour4 = (messageRecu2 != null) ? "1" : "0";
+
 
                 // Ouverture de la page de sychronisation
                 status.setText("Serveur : Redirection");
@@ -89,13 +104,16 @@ public class BluetoothServerThread extends Thread {
                     Bundle bundle = new Bundle();
                     bundle.putString("deviceName", deviceName);
                     bundle.putString("deviceAddress", deviceAddress);
+                    bundle.putString("deviceRole", "serveur");
+                    bundle.putString("deviceRetour", retour1 + retour2 + retour3 + retour4);
 
-                    // Créer une instance du fragment destination et lui transmettre les informations
-                    Fragment destinationFragment = new ExchangeSynchroFragment();
-                    destinationFragment.setArguments(bundle);
-
-                    // Redirection vers le fragment Synchronisation
                     try{
+                        // Créer une instance du fragment destination et lui transmettre les informations
+                        Fragment destinationFragment = new ExchangeSynchroFragment();
+                        destinationFragment.setArguments(bundle);
+
+                        // Redirection vers le fragment Synchronisation
+
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.replace(R.id.nav_host_fragment_activity_main, destinationFragment);
                         transaction.setReorderingAllowed(true);

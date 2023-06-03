@@ -204,11 +204,11 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
-        mListView2 = root.findViewById(R.id.listViewConnu);
+        /*mListView2 = root.findViewById(R.id.listViewConnu);
         mAdapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, pairedDeviceNames);
         mAdapter2.addAll(getPairedDeviceNames());
         mListView2.setAdapter(mAdapter2);
-        mListView2.setOnItemClickListener(this);
+        mListView2.setOnItemClickListener(this);*/
 
 
         Button BtnServeur;
@@ -231,7 +231,13 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
             }
         });
 
-
+        Button BtnRecherche;
+        BtnRecherche = root.findViewById(R.id.BtnRecherche);
+        BtnRecherche.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDiscovery();
+            }});
 
         return root;
     }
@@ -321,6 +327,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         Bundle bundle = new Bundle();
         bundle.putString("deviceName", deviceName);
         bundle.putString("deviceAddress", deviceAddress);
+        bundle.putString("deviceRole", "client");
 
         // Créer une instance du fragment destination et lui transmettre les informations
         Fragment destinationFragment = new ExchangeSynchroFragment();

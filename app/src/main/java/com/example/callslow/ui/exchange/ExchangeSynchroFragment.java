@@ -31,7 +31,13 @@ public class ExchangeSynchroFragment extends Fragment {
     private TextView monTextView;
     private TextView textCheckEchangeEnvoyer;
     private TextView textCheckEchangeRecu;
+
+    private TextView textCheckBoiteRecu;
+    private TextView textCheckBoiteEnvoyer;
     private String deviceName = "test";
+
+    private String deviceRole = "autre";
+    private String deviceRetour = "0000";
     private String deviceAddress = "00:00:00:00:00";
     private static final UUID MY_UUID = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
@@ -46,48 +52,121 @@ public class ExchangeSynchroFragment extends Fragment {
         if (args != null) {
             deviceName = args.getString("deviceName");
             deviceAddress = args.getString("deviceAddress");
+            deviceRole = args.getString("deviceRole");
+            deviceRetour = args.getString("deviceRetour");
+
             monTextView = root.findViewById(R.id.nameDevice);
             monTextView.setText(deviceName);
         } else {
             Toast.makeText(requireContext(), "Erreur : Le bundle est null", Toast.LENGTH_SHORT).show();
         }
 
-        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
+        if(deviceRole == "client") {
 
-        try {
-            BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
-            socket.connect();
+            BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
+
             try {
-                InputStream inputStream = socket.getInputStream();
-                OutputStream outputStream = socket.getOutputStream();
+                BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+                socket.connect();
+                try {
+                    InputStream inputStream = socket.getInputStream();
+                    OutputStream outputStream = socket.getOutputStream();
 
-                // Envoyer le fichier échange
-                String message = "Coucou, je suis le client";
-                outputStream.write(message.getBytes());
-                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyer);
-                textCheckEchangeEnvoyer.setTextColor(Color.parseColor("#00FF00"));
+                    // Envoyer le fichier message
+                    String message = "Coucou, je suis fichier message";
+                    outputStream.write(message.getBytes());
 
-                // Réception fichier message
-                byte[] buffer = new byte[1024];
-                int bytesRead = inputStream.read(buffer);
-                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecu);
-                textCheckEchangeRecu.setTextColor(Color.GREEN);
+                    // Si success
+                    textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+                    textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
+                    textCheckEchangeEnvoyer.setText("\u2714");
 
-                String messageRecu = new String(buffer, 0, bytesRead);
-                System.out.println(messageRecu);
-                Toast.makeText(requireContext(), messageRecu, Toast.LENGTH_SHORT).show();
+                    // Réception fichier message
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = inputStream.read(buffer);
+                    String messageRecu = new String(buffer, 0, bytesRead);
+                    System.out.println(messageRecu);
+                    Toast.makeText(requireContext(), messageRecu, Toast.LENGTH_SHORT).show();
+                    // Si success
+                    textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+                    textCheckEchangeRecu.setTextColor(Color.GREEN);
+                    textCheckEchangeRecu.setText("\u2714");
 
+                    // Envoyer le fichier boite au lettre
+                    String message2 = "Coucou, je suis fichier boite au lettre";
+                    outputStream.write(message2.getBytes());
+
+                    // Si success
+                    textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+                    textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
+                    textCheckBoiteEnvoyer.setText("\u2714");
+
+                    // Réception fichier boite au lettre
+                    byte[] buffer2 = new byte[1024];
+                    int bytesRead2 = inputStream.read(buffer2);
+                    String messageRecu2 = new String(buffer2, 0, bytesRead2);
+                    System.out.println(messageRecu2);
+                    Toast.makeText(requireContext(), messageRecu2, Toast.LENGTH_SHORT).show();
+                    // Si success
+                    textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
+                    textCheckBoiteRecu.setTextColor(Color.GREEN);
+                    textCheckBoiteRecu.setText("\u2714");
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    socket.close();
+                }
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            } finally {
-                socket.close();
+                Toast.makeText(requireContext(), "Connexion : impossible", Toast.LENGTH_SHORT).show();
+                retour();
             }
-        } catch (IOException e) {
-            Toast.makeText(requireContext(), "Connexion : impossible", Toast.LENGTH_SHORT).show();
-            retour();
+        }
+        if(deviceRole == "serveur") {
+            Toast.makeText(requireContext(), deviceRetour, Toast.LENGTH_SHORT).show();
+            System.out.println(deviceRetour);
+            if(deviceRetour.charAt(0) == '1'){
+                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+                textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
+                textCheckEchangeEnvoyer.setText("\u2714");
+            } else {
+                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+                textCheckEchangeEnvoyer.setTextColor(Color.RED);
+                textCheckEchangeEnvoyer.setText("\u274C");
+            }
+
+            if(deviceRetour.charAt(1) == '1'){
+                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+                textCheckEchangeRecu.setTextColor(Color.GREEN);
+                textCheckEchangeRecu.setText("\u2714");
+            } else {
+                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+                textCheckEchangeRecu.setTextColor(Color.RED);
+                textCheckEchangeRecu.setText("\u274C");
+            }
+
+            if(deviceRetour.charAt(2) == '1'){
+                textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+                textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
+                textCheckBoiteEnvoyer.setText("\u2714");
+            } else {
+                textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+                textCheckBoiteEnvoyer.setTextColor(Color.RED);
+                textCheckBoiteEnvoyer.setText("\u274C");
+            }
+
+            if(deviceRetour.charAt(3) == '1'){
+                textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
+                textCheckBoiteRecu.setTextColor(Color.GREEN);
+                textCheckBoiteRecu.setText("\u2714");
+            } else {
+                textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
+                textCheckBoiteRecu.setTextColor(Color.RED);
+                textCheckBoiteRecu.setText("\u274C");
+            }
         }
 
-        Button mBtnRetour = root.findViewById(R.id.BtnRetour);
+            Button mBtnRetour = root.findViewById(R.id.BtnRetour);
         mBtnRetour.setOnClickListener(v -> retour());
 
         Button mBtnSuivant = root.findViewById(R.id.BtnSuivant);

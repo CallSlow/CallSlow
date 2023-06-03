@@ -48,26 +48,11 @@
                     android:layout_height="wrap_content"
                     android:text="Démarrer Serveur" />
 
-                <TextView
+                <Button
+                    android:id="@+id/BtnRecherche"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Appareils enregistrés"
-                    android:textStyle="bold"
-                    android:textColor="#9e00c1" />
-
-                <TextView
-                    android:id="@+id/tagAppareilConnu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textStyle="bold"
-                    android:textColor="#595959" />
-
-                <ListView
-                    android:id="@+id/listViewConnu"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="10dp" />
+                    android:text="Recherche Appareils" />
 
                 <TextView
                     android:layout_width="match_parent"

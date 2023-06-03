@@ -61,43 +61,88 @@
                     android:orientation="vertical"
                     android:textColor="#FFFFFF">
 
-                    <TextView
-                        android:id="@+id/textCheckEchangeEnvoyer"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/textView6"
                         android:layout_weight="1"
-                        android:text="Envoi du fichier d'échange" />
+                        android:orientation="horizontal"
+                        android:textColor="#FFFFFF">
+                        <TextView
+                            android:id="@+id/textCheckEchangeEnvoyer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Envoi du fichier d'échange" />
+                        <TextView
+                            android:id="@+id/textCheckEchangeEnvoyerTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="..." />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textView6"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:textColor="#FFFFFF">
+                        <TextView
+                            android:id="@+id/textCheckBoiteEnvoyer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Envoi du fichier boite" />
+                        <TextView
+                            android:id="@+id/textCheckBoiteEnvoyerTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="..." />
+                    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textCheckBoiteEnvoyer"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/textView6"
                         android:layout_weight="1"
-                        android:text="Envoi du fichier boite" />
+                        android:orientation="horizontal"
+                        android:textColor="#FFFFFF">
+                        <TextView
+                            android:id="@+id/textCheckEchangeRecu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Réception du fichier d'échange" />
+                        <TextView
+                            android:id="@+id/textCheckEchangeRecuTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="..." />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textView6"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:textColor="#FFFFFF">
+                        <TextView
+                            android:id="@+id/textCheckBoiteRecu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Réception du fichier boite" />
 
-                    <TextView
-                        android:id="@+id/textCheckEchangeRecu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Réception du fichier d'échange" />
-
-                    <TextView
-                        android:id="@+id/textCheckBoiteRecu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Réception du fichier boite" />
-
-                    <ProgressBar
-                        android:id="@+id/progressBar"
-                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="100"
-                        android:progress="0"
-                        android:progressTint="#8D0097" />
+                        <TextView
+                            android:id="@+id/textCheckBoiteRecuTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="..." />
+                    </LinearLayout>
 
                 </LinearLayout>
             </LinearLayout>
@@ -170,15 +215,6 @@
 
                         />
 
-                    <ProgressBar
-                        android:id="@+id/progressBar1"
-                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="100"
-                        android:progress="0"
-                        android:progressTint="#8D0097" />
 
                 </LinearLayout>
             </LinearLayout>
