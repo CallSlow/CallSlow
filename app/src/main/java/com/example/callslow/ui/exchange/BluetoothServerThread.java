@@ -5,8 +5,13 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.callslow.R;
 
@@ -23,12 +28,14 @@ public class BluetoothServerThread extends Thread {
 
     private TextView status;
 
-    public BluetoothServerThread(BluetoothAdapter adapter, UUID uuid, View view) {
+    private FragmentManager fragmentManager;
+
+    public BluetoothServerThread(BluetoothAdapter adapter, UUID uuid, View view, FragmentManager manager) {
         bluetoothAdapter = adapter;
         MY_UUID = uuid;
         parentView = view;
-
         status = (TextView) view.findViewById(R.id.tagServeur);
+        fragmentManager = manager;
     }
 
     @Override
@@ -69,14 +76,52 @@ public class BluetoothServerThread extends Thread {
                 String messageRecu = "Coucou, je suis le serveur";
                 outputStream.write(messageRecu.getBytes());
 
-                serverSocket.close(); // Fermez le socket du serveur après la communication
+                // Ouverture de la page de sychronisation
+                status.setText("Serveur : Redirection");
+                System.out.println("-- Serveur : Redirection --");
+                    String deviceName = bluetoothAdapter.getName();
+                    String deviceAddress = bluetoothAdapter.getAddress();
+
+                    System.out.println(deviceName);
+                    System.out.println(deviceAddress);
+
+                    // Créer un Bundle pour stocker les informations de l'appareil sélectionné
+                    Bundle bundle = new Bundle();
+                    bundle.putString("deviceName", deviceName);
+                    bundle.putString("deviceAddress", deviceAddress);
+
+                    // Créer une instance du fragment destination et lui transmettre les informations
+                    Fragment destinationFragment = new ExchangeSynchroFragment();
+                    destinationFragment.setArguments(bundle);
+
+                    // Redirection vers le fragment Synchronisation
+                    try{
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.nav_host_fragment_activity_main, destinationFragment);
+                        transaction.setReorderingAllowed(true);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    } catch (Exception e) {
+                        System.out.println("-- Serveur : Redirection Impossible --");
+                        e.printStackTrace();
+                    }
+
+                System.out.println("-- Serveur : Redirection Fin --");
+
+
+
+                // Fermez le socket du serveur après la communication
+                socket.close();
+
             }
+            //serverSocket.close();
 
         } catch (IOException e) {
             System.out.println("-- Erreur : Serveur --");
             // Une erreur s'est produite lors de l'attente d'une connexion Bluetooth entrante
             e.printStackTrace();
         }
+
         System.out.println(" -- Fermeture serveur reception message --");
     }
 

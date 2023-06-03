@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -217,7 +218,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
             public void onClick(View v) {
 
                 BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID, getView());
+                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID, getView(), getParentFragmentManager());
 
                 Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                 discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); // Temps de visibilité en secondes
