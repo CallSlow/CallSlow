@@ -1,32 +1,45 @@
 package com.example.callslow.ui.exchange;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.callslow.R;
-import com.example.callslow.databinding.FragmentEchangeMainBinding;
 import com.example.callslow.databinding.FragmentEchangeSynchroBinding;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
 public class ExchangeSynchroFragment extends Fragment {
 
     private FragmentEchangeSynchroBinding binding;
+    private TextView monTextView;
+    private TextView textCheckEchangeEnvoyer;
+    private TextView textCheckEchangeRecu;
 
-    ListView mListView;
+    private TextView textCheckBoiteRecu;
+    private TextView textCheckBoiteEnvoyer;
+    private String deviceName = "test";
+
+    private String deviceRole = "autre";
+    private String deviceRetour = "0000";
+    private String deviceAddress = "00:00:00:00:00";
+    private static final UUID MY_UUID = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -34,37 +47,148 @@ public class ExchangeSynchroFragment extends Fragment {
         binding = FragmentEchangeSynchroBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Récupérer les informations de l'appareil transmises par le premier fragment
+        Bundle args = getArguments();
+        if (args != null) {
+            deviceName = args.getString("deviceName");
+            deviceAddress = args.getString("deviceAddress");
+            deviceRole = args.getString("deviceRole");
+            deviceRetour = args.getString("deviceRetour");
 
-        Button mBtnRetour;
-        mBtnRetour = root.findViewById(R.id.BtnRetour);
-        mBtnRetour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment exchangeFragment = new ExchangeFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
-                transaction.setReorderingAllowed(true);
-                transaction.addToBackStack(null);
-                transaction.commit();
+            monTextView = root.findViewById(R.id.nameDevice);
+            monTextView.setText(deviceName);
+        } else {
+            Toast.makeText(requireContext(), "Erreur : Le bundle est null", Toast.LENGTH_SHORT).show();
+        }
+
+        if(deviceRole == "client") {
+
+            BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
+
+            try {
+                BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+                socket.connect();
+                try {
+                    InputStream inputStream = socket.getInputStream();
+                    OutputStream outputStream = socket.getOutputStream();
+
+                    // Envoyer le fichier message
+                    String message = "Coucou, je suis fichier message";
+                    outputStream.write(message.getBytes());
+
+                    // Si success
+                    textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+                    textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
+                    textCheckEchangeEnvoyer.setText("\u2714");
+
+                    // Réception fichier message
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = inputStream.read(buffer);
+                    String messageRecu = new String(buffer, 0, bytesRead);
+                    System.out.println(messageRecu);
+                    Toast.makeText(requireContext(), messageRecu, Toast.LENGTH_SHORT).show();
+                    // Si success
+                    textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+                    textCheckEchangeRecu.setTextColor(Color.GREEN);
+                    textCheckEchangeRecu.setText("\u2714");
+
+                    // Envoyer le fichier boite au lettre
+                    String message2 = "Coucou, je suis fichier boite au lettre";
+                    outputStream.write(message2.getBytes());
+
+                    // Si success
+                    textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+                    textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
+                    textCheckBoiteEnvoyer.setText("\u2714");
+
+                    // Réception fichier boite au lettre
+                    byte[] buffer2 = new byte[1024];
+                    int bytesRead2 = inputStream.read(buffer2);
+                    String messageRecu2 = new String(buffer2, 0, bytesRead2);
+                    System.out.println(messageRecu2);
+                    Toast.makeText(requireContext(), messageRecu2, Toast.LENGTH_SHORT).show();
+                    // Si success
+                    textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
+                    textCheckBoiteRecu.setTextColor(Color.GREEN);
+                    textCheckBoiteRecu.setText("\u2714");
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                Toast.makeText(requireContext(), "Connexion : impossible", Toast.LENGTH_SHORT).show();
+                retour();
             }
-        });
-
-        Button mBtnSuivant;
-        mBtnSuivant = root.findViewById(R.id.BtnSuivant);
-        mBtnSuivant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment exchangeFragment = new ExchangeEndFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
-                transaction.setReorderingAllowed(true);
-                transaction.addToBackStack(null);
-                transaction.commit();
+        }
+        if(deviceRole == "serveur") {
+            Toast.makeText(requireContext(), deviceRetour, Toast.LENGTH_SHORT).show();
+            System.out.println(deviceRetour);
+            if(deviceRetour.charAt(0) == '1'){
+                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+                textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
+                textCheckEchangeEnvoyer.setText("\u2714");
+            } else {
+                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+                textCheckEchangeEnvoyer.setTextColor(Color.RED);
+                textCheckEchangeEnvoyer.setText("\u274C");
             }
-        });
 
+            if(deviceRetour.charAt(1) == '1'){
+                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+                textCheckEchangeRecu.setTextColor(Color.GREEN);
+                textCheckEchangeRecu.setText("\u2714");
+            } else {
+                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+                textCheckEchangeRecu.setTextColor(Color.RED);
+                textCheckEchangeRecu.setText("\u274C");
+            }
+
+            if(deviceRetour.charAt(2) == '1'){
+                textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+                textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
+                textCheckBoiteEnvoyer.setText("\u2714");
+            } else {
+                textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+                textCheckBoiteEnvoyer.setTextColor(Color.RED);
+                textCheckBoiteEnvoyer.setText("\u274C");
+            }
+
+            if(deviceRetour.charAt(3) == '1'){
+                textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
+                textCheckBoiteRecu.setTextColor(Color.GREEN);
+                textCheckBoiteRecu.setText("\u2714");
+            } else {
+                textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
+                textCheckBoiteRecu.setTextColor(Color.RED);
+                textCheckBoiteRecu.setText("\u274C");
+            }
+        }
+
+            Button mBtnRetour = root.findViewById(R.id.BtnRetour);
+        mBtnRetour.setOnClickListener(v -> retour());
+
+        Button mBtnSuivant = root.findViewById(R.id.BtnSuivant);
+        mBtnSuivant.setOnClickListener(v -> {
+            Fragment exchangeFragment = new ExchangeEndFragment();
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
+            transaction.setReorderingAllowed(true);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
 
         return root;
+    }
+
+    public void retour() {
+        Fragment exchangeFragment = new ExchangeFragment();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
+        transaction.setReorderingAllowed(true);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -72,6 +196,4 @@ public class ExchangeSynchroFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-
 }

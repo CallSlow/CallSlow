@@ -6,70 +6,91 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/myFragmentContainer5"
-    >
+    android:id="@+id/myFragmentContainer5">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        tools:context=".ui.exchange.ExchangeFragment"
-        >
-
-    <LinearLayout
-        android:id="@+id/LinearLayout60"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"/>
-
-    <LinearLayout
-        android:id="@+id/LinearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/LinearLayout60"
-        android:orientation="horizontal"
-        android:layout_margin="15dp">
+        android:layout_height="match_parent"
+        tools:context=".ui.exchange.ExchangeFragment">
 
         <LinearLayout
+            android:id="@+id/LinearLayout60"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/LinearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LinearLayout60"
+            android:orientation="horizontal"
+            android:layout_margin="15dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Choisir un appareil"
-                android:textStyle="bold"
-                android:textColor="#9e00c1"
-                />
+                android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/listView"
-                android:layout_width="wrap_content"
-                android:layout_height="500dp"
-                android:layout_marginTop="10dp"/>
+                <TextView
+                    android:id="@+id/tagServeur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Serveur : OFF"
+                    android:textStyle="bold"
+                    android:textAlignment="viewEnd"
+                    android:textColor="#FF0000" />
+
+                <Button
+                    android:id="@+id/BtnServeur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Démarrer Serveur" />
+
+                <Button
+                    android:id="@+id/BtnRecherche"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recherche Appareils" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Choisir un appareil"
+                    android:textStyle="bold"
+                    android:textColor="#9e00c1" />
+
+                <TextView
+                    android:id="@+id/tagAppareil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:textColor="#595959" />
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/LinearLayout2"
-        android:orientation="horizontal">
-
-        <Space
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="6" />
+            android:layout_below="@+id/LinearLayout2"
+            android:orientation="horizontal">
 
-    </LinearLayout>
-</RelativeLayout>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
-
-
-
-
-
