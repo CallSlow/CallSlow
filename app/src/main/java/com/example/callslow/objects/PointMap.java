@@ -4,10 +4,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-public class PointMap  {
-    private final String name,description,latitude,longitude;
+import java.util.UUID;
 
-    public PointMap(String name, String description, String latitude, String longitude) {
+public class PointMap  {
+    private final String uuid,name,description,latitude,longitude;
+
+    public PointMap(String uuid, String name, String description, String latitude, String longitude) {
+        this.uuid= uuid;
         this.name= name;
         this.description = description;
         this.latitude = latitude;
@@ -15,6 +18,7 @@ public class PointMap  {
     }
 
     public PointMap(JSONObject object) throws JSONException {
+        uuid = object.getString("uuid");
         name = object.getString("name");
         description = object.getString("description");
         latitude = object.getString("latitude");
@@ -37,6 +41,8 @@ public class PointMap  {
         return longitude;
     }
 
+    public String getUuid() {return uuid;}
+
     public GeoPoint toGeopoint(){
         return new GeoPoint(Double.parseDouble(latitude),Double.parseDouble(longitude));
     }
@@ -44,6 +50,7 @@ public class PointMap  {
     public JSONObject toJSON(){
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("uuid", uuid);
             jsonObject.put("name", name);
             jsonObject.put("description", description);
             jsonObject.put("latitude", latitude);
