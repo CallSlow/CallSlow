@@ -3,10 +3,7 @@ package com.example.callslow.ui.maps;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -32,21 +27,16 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
-import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -70,7 +60,6 @@ public class MapsFragment extends Fragment implements OnClickListener {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         context = getContext();
 
-
         //Récupération de l'id de la carte dans fragment_maps
         map = view.findViewById(R.id.id_map);
 
@@ -78,7 +67,7 @@ public class MapsFragment extends Fragment implements OnClickListener {
         map.setTileSource(TileSourceFactory.MAPNIK);
 
         //Affichage des boutons de zoom et dézoom
-        map.setBuiltInZoomControls(true);
+        map.setMultiTouchControls(true);
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
 
         //Définition du point de départ lors du lancement de onCreate
@@ -95,7 +84,7 @@ public class MapsFragment extends Fragment implements OnClickListener {
 
         init();
         for(PointMap p : points_map){
-            items.add(new OverlayItem(p.getName(),p.getDescription(),p.toGeopoint()));
+            items.add(new OverlayItem(p.getUuid(),p.getName(),p.getDescription(),p.toGeopoint()));
         }
 
         reloadMap(items);
@@ -110,8 +99,6 @@ public class MapsFragment extends Fragment implements OnClickListener {
 
         final IGeoPoint centre = map.getMapCenter();
         System.out.println("Latitude : " + centre.getLatitude() + " - Longitude : "+ centre.getLongitude());
-        //retourne 0 et 0
-
 
         return view;
     }
@@ -122,17 +109,15 @@ public class MapsFragment extends Fragment implements OnClickListener {
     private void reloadMap(ArrayList<OverlayItem> items){
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(requireContext().getApplicationContext(), items, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
-            public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                String markerId = item.getUid();
-                System.out.println("UUIDDDDDDD : " + markerId);
-                return true;
-            }
+            public boolean onItemSingleTapUp(int index, OverlayItem item) {return true;}
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                return false;
+                map.getOverlays().clear();
+                String markerId = item.getUid();
+                removeMarkerFromJSON(markerId);
+                return true;
             }
-
         });
 
         mOverlay.setFocusItemsOnTap(true);
@@ -224,6 +209,32 @@ public class MapsFragment extends Fragment implements OnClickListener {
             longitudeEditText.setText(String.valueOf(centerPoint.getLongitude()));
         }
     }
+
+
+    // Méthode pour supprimer un marker du fichier JSON
+// Méthode pour supprimer un marker du fichier JSON
+    private void removeMarkerFromJSON(String markerUUID) {
+        try {
+            for (int i = 0; i < points_map.size(); i++) {
+                PointMap point = points_map.get(i);
+                if (point.getUuid().equals(markerUUID)) {
+                    points_map.remove(i);
+                    items.remove(i); // Supprimer l'overlay correspondant à ce point
+                    // Mettre à jour la carte avec la nouvelle liste d'éléments
+                    reloadMap(items);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        // Mettre à jour le fichier JSON avec les modifications
+        try {
+            writeFile(); // Méthode pour écrire le contenu mis à jour dans le fichier JSON
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Cette méthode initialise le système en chargeant les points à partir d'un fichier JSON.
@@ -339,18 +350,22 @@ public class MapsFragment extends Fragment implements OnClickListener {
      * Les données JSON sont ensuite écrites dans un fichier avec le nom spécifié.
      */
     public void writeFile() throws Exception {
-        // préparation de l'array json
-        JSONObject obj = new JSONObject();
-        JSONArray array = new JSONArray();
-        for (PointMap p : points_map) {
-            array.put(p.toJSON());
-        }
+        try {
+            // préparation de l'array json
+            JSONObject obj = new JSONObject();
+            JSONArray array = new JSONArray();
+            for (PointMap p : points_map) {
+                array.put(p.toJSON());
+            }
 
-        obj.put("point",array);
-        FileOutputStream fileOutputStream = context.openFileOutput(MAP_FILE, Context.MODE_PRIVATE);
-        String jsonString = obj.toString();
-        fileOutputStream.write(jsonString.getBytes());
-        fileOutputStream.close();
+            obj.put("point",array);
+            FileOutputStream fileOutputStream = context.openFileOutput(MAP_FILE, Context.MODE_PRIVATE);
+            String jsonString = obj.toString();
+            fileOutputStream.write(jsonString.getBytes());
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
