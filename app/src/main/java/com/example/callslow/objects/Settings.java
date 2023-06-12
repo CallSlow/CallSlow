@@ -38,10 +38,10 @@ public class Settings extends Application {
 
         try {
             settings_json = new JSONObject(json);
-
+            JSONObject setting = settings_json.getJSONObject("settings");
             try {
-                macAdress = String.valueOf(settings_json.getJSONObject("macAdress"));
-                pseudo = String.valueOf(settings_json.getJSONObject("pseudo"));
+                macAdress = setting.getString("macAdress");
+                pseudo = setting.getString("pseudo");
             } catch (Exception e) {}
 
         } catch (JSONException e) {
@@ -122,13 +122,15 @@ public class Settings extends Application {
      * then writes the file
      */
 
-    public boolean replaceMacAdress(String newMacAdress) throws Exception {
+    public boolean changeMacAdress(String newMacAdress) throws Exception {
         macAdress = newMacAdress;
+        writeFile();
         return true;
     }
 
-    public boolean replacePseudo(String newPseudo) throws Exception {
+    public boolean changePseudo(String newPseudo) throws Exception {
         pseudo = newPseudo;
+        writeFile();
         return true;
     }
 }

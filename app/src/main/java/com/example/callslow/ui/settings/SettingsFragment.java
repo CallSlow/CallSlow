@@ -1,5 +1,7 @@
 package com.example.callslow.ui.settings;
 
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,9 +37,30 @@ public class SettingsFragment extends Fragment {
 
         final TextView textView = binding.textView;
         EditText macAdress = binding.myMacAdress;
-        macAdress.setText("AA:AA:AA:AA:AA:AA");
+        if (settingslist.get(0) != null) {
+            macAdress.setText(settingslist.get(0));
+        } else {
+            WifiManager manager = (WifiManager) getActivity().getApplicationContext().getSystemService(getContext().WIFI_SERVICE);
+            WifiInfo info = manager.getConnectionInfo();
+            String address = info.getMacAddress();
+            macAdress.setText(address);
+            try {
+                Settings.getInstance().changeMacAdress(address);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
         EditText pseudo = binding.myPseudo;
-        pseudo.setText("Graminem");
+        if (settingslist.get(1) != null) {
+            pseudo.setText(settingslist.get(1));
+        } else {
+            pseudo.setText("Entrez votre pseudo");
+            try {
+                Settings.getInstance().changePseudo(pseudo.getText().toString());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
         settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
