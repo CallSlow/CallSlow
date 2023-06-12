@@ -19,6 +19,7 @@ import com.example.callslow.objects.Contacts;
 import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdapter;
 import com.example.callslow.objects.Messages;
+import com.example.callslow.objects.Settings;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     private ListView mListView;
     private MessageAdapter mAdapter;
     private ArrayList<Message> mMessageList;
+    private ArrayList<String> settingslist;
     private String name;
     private String mac_adress;
 
@@ -48,8 +50,11 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         }
         messages.readFile();
         mMessageList = new ArrayList<Message>();
+
+        Settings.getInstance().init(getContext());
+        settingslist = Settings.getInstance().getSettings();
         for (Message msg: messages.getMessages()) {
-            if (msg.getSenderMac().equals("AA:AA:AA:AA:AA:AA") || msg.getReceiverMac().equals("AA:AA:AA:AA:AA:AA")) {// TODO : Récupérer la MAC locale depuis les settings
+            if (msg.getSenderMac().equals(settingslist.get(0)) || msg.getReceiverMac().equals(settingslist.get(0))) {// TODO : Récupérer la MAC locale depuis les settings
                 if (msg.getSenderMac().equals(mac_adress) || msg.getReceiverMac().equals(mac_adress)) {
                     mMessageList.add(msg);
                 }
@@ -79,7 +84,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        Contact me = new Contact("Mathieu Maes", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
+        Contact me = new Contact("Mathieu Maes", settingslist.get(0));// TODO : Récupérer la MAC locale depuis les settings
 
         Date date = new Date();
 
