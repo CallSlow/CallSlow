@@ -223,7 +223,7 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
             public void onClick(View v) {
 
                 BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID, getView(), getParentFragmentManager());
+                BluetoothServerThread server = new BluetoothServerThread(bluetoothAdapter, MY_UUID, getView(), getParentFragmentManager(), getContext());
 
                 Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                 discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); // Temps de visibilité en secondes
