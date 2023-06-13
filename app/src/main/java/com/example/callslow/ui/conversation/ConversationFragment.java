@@ -1,10 +1,12 @@
 package com.example.callslow.ui.conversation;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -108,6 +110,9 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
         // Suppression du message écrit de la zone de texte
         editMessage.setText(null);
+
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
     }
 }
