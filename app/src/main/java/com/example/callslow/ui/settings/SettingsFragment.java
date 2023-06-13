@@ -26,6 +26,8 @@ public class SettingsFragment extends Fragment {
 
         final TextView textView = binding.textView;
         settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+
         return root;
     }
 

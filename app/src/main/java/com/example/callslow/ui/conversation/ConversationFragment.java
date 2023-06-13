@@ -79,7 +79,8 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        Contact me = new Contact("Mathieu Maes", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
+
+        Contact me = new Contact("Moi", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
 
         Date date = new Date();
 

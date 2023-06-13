@@ -89,10 +89,12 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                if (device != null && device.getName() != null &&  device.getBondState() != BluetoothDevice.BOND_BONDED && !liste_found.contains(device) ) {
-                    possibleNames.add(device.getName() + " - " + device.getAddress());
-                    liste_found.add(device);
-                    mAdapter.notifyDataSetChanged();
+                if (device != null && device.getName() != null && device.getBondState() != BluetoothDevice.BOND_BONDED && !liste_found.contains(device)) {
+                    if (device.getName().length() != 0) {
+                        possibleNames.add(device.getName() + " - " + device.getAddress());
+                        liste_found.add(device);
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 // PASS
@@ -239,7 +241,6 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         BtnRecherche.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                liste_found = new ArrayList<>();
                 startDiscovery();
             }});
 

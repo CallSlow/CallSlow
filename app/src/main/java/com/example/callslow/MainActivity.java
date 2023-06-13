@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.callslow.ui.exchange.BluetoothServerThread;
@@ -98,26 +99,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-    }
-
-    private boolean checkAndRequestBluetoothPermissions(Context context) {
-        // Set allPermissionsGranted to true, assuming all necessary permissions are granted by default
-        boolean allPermissionsGranted = true;
-        // Create an array of strings containing the necessary permissions for Bluetooth discovery
-        String[] permissions = new String[]{android.Manifest.permission.BLUETOOTH, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT};
-        for (String permission : permissions) {
-            // Check if the necessary permission is not granted and set allPermissionsGranted to false
-            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                // Setting the allPermissionsGranted flag to false
-                allPermissionsGranted = false;
-                // Requesting the necessary permissions for Bluetooth discovery from the user
-                ActivityCompat.requestPermissions((Activity) context, permissions, 1);
-
-                System.out.println("***********  Requesting bluetooth permissions");
-                break;
-            }
-        }
-        return allPermissionsGranted;
     }
 
 }
