@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 
@@ -55,11 +57,26 @@ public class BluetoothServerThread extends Thread {
 
             BluetoothSocket socket;
             while (true) {
-                status.setText("Serveur : Prêt");
-                status.setTextColor(Color.GREEN);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        status.setText("Serveur : Prêt");
+                        status.setTextColor(Color.GREEN);
+                    }
+                });
+
                 socket = serverSocket.accept();
-                status.setText("Serveur : en cours...");
-                status.setTextColor(Color.YELLOW);
+
+                handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        status.setText("Serveur : en cours...");
+                        status.setTextColor(Color.YELLOW);
+                    }
+                });
+
                 System.out.println("-- Une connexion Bluetooth entrante a été établie avec succès --");
 
 
@@ -92,7 +109,14 @@ public class BluetoothServerThread extends Thread {
 
 
                 // Ouverture de la page de sychronisation
-                status.setText("Serveur : Redirection");
+                handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        status.setText("Serveur : Redirection");
+                    }
+                });
+
                 System.out.println("-- Serveur : Redirection --");
                     String deviceName = bluetoothAdapter.getName();
                     String deviceAddress = bluetoothAdapter.getAddress();
