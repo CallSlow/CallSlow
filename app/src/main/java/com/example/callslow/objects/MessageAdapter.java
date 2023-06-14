@@ -53,24 +53,22 @@ public class MessageAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
         if (message.getSenderMac().equals(settingslist.get(0))) {
-
             convertView = inflater.inflate(R.layout.item_conversation_receiver_messages, parent, false);
 
-
+            TextView sendingDateContentView = convertView.findViewById(R.id.text_timestamp_receiver);
             TextView messageContentView = convertView.findViewById(R.id.text_message_receiver);
-            //TextView senderNameView = view.findViewById(R.id.text_user_sender);
-            //Contact sender = message.getSender();
-            messageContentView.setText(message.getContent());
-            //senderNameView.setText(message.getSenderMac());
-        } else {
 
+            sendingDateContentView.setText(message.getSendingDate());
+            messageContentView.setText(message.getContent());
+        }
+        else {
             convertView = inflater.inflate(R.layout.item_conversation_sender_messages, parent, false);
 
+            TextView sendingDateContentView = convertView.findViewById(R.id.text_timestamp_sender);
             TextView messageContentView = convertView.findViewById(R.id.text_message_sender);
             TextView senderNameView = convertView.findViewById(R.id.text_user_sender);
 
-            //Contact sender = message.getSender();
-
+            sendingDateContentView.setText(message.getSendingDate());
             messageContentView.setText(message.getContent());
             senderNameView.setText(message.getSenderMac());
         }
