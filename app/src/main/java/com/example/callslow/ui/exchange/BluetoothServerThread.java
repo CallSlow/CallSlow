@@ -150,7 +150,7 @@ public class BluetoothServerThread extends Thread {
                 int bytesRead_bal = 0;
 
                 bytesRead_bal = fileInputStream_bal.read(buffer_bal);
-                outputStream.write(buffer_bal, 0, bytesRead_bal);
+                outputStream_BAL.write(buffer_bal, 0, bytesRead_bal);
                 fileInputStream_bal.close();
 
               //   String retour4 = (messageRecu2 != null) ? "1" : "0";
@@ -169,9 +169,6 @@ public class BluetoothServerThread extends Thread {
                 try {
                     JSONObject message_json1 = new JSONObject(json_list_1);
                     JSONObject message_json2 = new JSONObject(json_list_2);
-
-                    Log.d("Comparaison Objet JSON",String.valueOf(message_json1));
-                    Log.d("Comparaison Objet JSON 2",String.valueOf(message_json2));
 
 
                     JSONArray array_json1 = message_json1.getJSONArray("messages");

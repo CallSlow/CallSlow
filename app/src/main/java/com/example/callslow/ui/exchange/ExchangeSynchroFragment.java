@@ -300,6 +300,7 @@ public class ExchangeSynchroFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        Log.d("Destruction vue","Oui");
         super.onDestroyView();
         binding = null;
     }

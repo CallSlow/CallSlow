@@ -69,21 +69,23 @@ public class Comparaison {
             if (jsonObject2 != null && (macAddress.equals(jsonObject2.optString("receiverMac")) || macAddress.length() == 0)) {
                 boolean found = false;
 
-                for (int j = 0; j < list1.length(); j++) {
-                    JSONObject jsonObject1 = list1.optJSONObject(j);
-                    boolean equal = true;
+                if (list1.length() > 0) {
+                    for (int j = 0; j < list1.length(); j++) {
+                        JSONObject jsonObject1 = list1.optJSONObject(j);
+                        boolean equal = true;
 
-                    if (jsonObject1 != null && jsonObject2 != null) {
-                        for (String property : properties) {
-                            if (!jsonObject1.optString(property).equals(jsonObject2.optString(property))) {
-                                equal = false;
+                        if (jsonObject1 != null && jsonObject2 != null) {
+                            for (String property : properties) {
+                                if (!jsonObject1.optString(property).equals(jsonObject2.optString(property))) {
+                                    equal = false;
+                                    break;
+                                }
+                            }
+
+                            if (equal) {
+                                found = true;
                                 break;
                             }
-                        }
-
-                        if (equal) {
-                            found = true;
-                            break;
                         }
                     }
                 }
@@ -108,7 +110,6 @@ public class Comparaison {
 
         FileOutputStream fileOutputStream = context.openFileOutput(pathFile, Context.MODE_PRIVATE);
         String jsonString = obj.toString();
-        Log.d("Pitié ça marché",jsonString);
         fileOutputStream.write(jsonString.getBytes());
         fileOutputStream.close();
         return jsonString;
