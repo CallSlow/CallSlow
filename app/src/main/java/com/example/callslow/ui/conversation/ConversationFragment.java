@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentConversationBinding;
 import com.example.callslow.objects.Contact;
-import com.example.callslow.objects.Contacts;
 import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdapter;
 import com.example.callslow.objects.Messages;
@@ -79,19 +78,9 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         return root;
     }
 
-    public void createMessage(Message msg) {
-        try {
-            Messages.getInstance().addMessage(msg);
-            Messages.getInstance().writeFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //
-    }
-
     @Override
     public void onClick(View v) {
-        Contact me = new Contact("Mathieu Maes", settingslist.get(0));// TODO : Récupérer la MAC locale depuis les settings
+        Contact me = new Contact(Settings.getInstance().getSettings().get(1), Settings.getInstance().getSettings().get(0));
 
         Date date = new Date();
 
@@ -101,26 +90,38 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         String formattedDate = dateFormat.format(date);
         EditText editMessage = binding.getRoot().findViewById(R.id.editMessage);
         Message newMessage = new Message(UUID.randomUUID(), editMessage.getText().toString(), me.getMac(), mac_adress, formattedDate);
-
         // Écriture du message dans le fichier
         try {
-            if (editMessage.getText().toString().equals("")) {
-                alertBox("Message invalide", "Veuillez saisir un message.");
-                return;
-            } else {
-                this.createMessage(newMessage);
+            if (Settings.getInstance().getSettings().get(0) == null){ // Si l'utilsateur n'a pas de MAC définie
+                alertBox("Envoi impossible", "Veuillez définir votre adresse MAC dans les paramètres de l'application.");
+            }
+            else {
+                if ("".equals(editMessage.getText().toString())) {
+                    alertBox("Message invalide", "Veuillez saisir un message.");
+                    return;
+                }
+                else {
+                    // Écriture du message dans le fichier
+                    try {
+                        Messages.getInstance().addMessage(newMessage);
+                        Messages.getInstance().writeFile();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // Ajout du message sur la view
+                    mAdapter.add(newMessage);
+                    mAdapter.notifyDataSetChanged();
+
+                    // Suppression du message écrit de la zone de texte
+                    editMessage.setText(null);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Ajout du message sur la view
-        mAdapter.add(newMessage);
-        mAdapter.notifyDataSetChanged();
-
-        // Suppression du message écrit de la zone de texte
-        editMessage.setText(null);
-
+        // Fermeture du clavier
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
