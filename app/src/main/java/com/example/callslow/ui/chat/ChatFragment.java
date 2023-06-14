@@ -39,6 +39,7 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
         View root = binding.getRoot();
 
         listView = root.findViewById(R.id.list_chat);
+        Contacts.getInstance().init(getContext());
         Messages.getInstance().init(getContext());
         ChatList = Contacts.getInstance().getContacts();
         adapter = new ChatAdapter(getActivity(), ChatList);

@@ -1,10 +1,14 @@
 package com.example.callslow.ui.conversation;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,6 +23,7 @@ import com.example.callslow.objects.Contacts;
 import com.example.callslow.objects.Message;
 import com.example.callslow.objects.MessageAdapter;
 import com.example.callslow.objects.Messages;
+import com.example.callslow.objects.Settings;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,8 +36,10 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     private ListView mListView;
     private MessageAdapter mAdapter;
     private ArrayList<Message> mMessageList;
+    private ArrayList<String> settingslist;
     private String name;
     private String mac_adress;
+    private View view;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentConversationBinding.inflate(inflater, container, false);
@@ -48,8 +55,11 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         }
         messages.readFile();
         mMessageList = new ArrayList<Message>();
+
+        Settings.getInstance().init(getContext());
+        settingslist = Settings.getInstance().getSettings();
         for (Message msg: messages.getMessages()) {
-            if (msg.getSenderMac().equals("AA:AA:AA:AA:AA:AA") || msg.getReceiverMac().equals("AA:AA:AA:AA:AA:AA")) {// TODO : Récupérer la MAC locale depuis les settings
+            if (msg.getSenderMac().equals(settingslist.get(0)) || msg.getReceiverMac().equals(settingslist.get(0))) {// TODO : Récupérer la MAC locale depuis les settings
                 if (msg.getSenderMac().equals(mac_adress) || msg.getReceiverMac().equals(mac_adress)) {
                     mMessageList.add(msg);
                 }
@@ -63,6 +73,8 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         // Bouton Envoyer
         Button sendMessageButton = root.findViewById(R.id.sendMessageButton);
         sendMessageButton.setOnClickListener(this);
+
+        view = root;
 
         return root;
     }
@@ -79,9 +91,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-
-        Contact me = new Contact("Moi", "AA:AA:AA:AA:AA:AA");// TODO : Récupérer la MAC locale depuis les settings
-
+        Contact me = new Contact(Settings.getInstance().getSettings().get(1), Settings.getInstance().getSettings().get(0));
         Date date = new Date();
 
         // Initialisation du message à envoyer
@@ -93,7 +103,12 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
         // Écriture du message dans le fichier
         try {
-            this.createMessage(newMessage);
+            if (editMessage.getText().toString().equals("")) {
+                alertBox("Message invalide", "Veuillez saisir un message.");
+                return;
+            } else {
+                this.createMessage(newMessage);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,5 +120,22 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         // Suppression du message écrit de la zone de texte
         editMessage.setText(null);
 
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+    }
+
+    public void alertBox(String title, String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle(title)
+                .setMessage(content)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

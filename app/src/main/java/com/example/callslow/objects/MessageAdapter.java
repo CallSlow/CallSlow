@@ -9,11 +9,13 @@ import android.widget.TextView;
 
 import com.example.callslow.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageAdapter extends BaseAdapter {
     private Context mContext;
     private List<Message> mMessageList;
+    private ArrayList<String> settingslist;
 
     public MessageAdapter(Context mContext, List<Message> mMessageList) {
         this.mContext = mContext;
@@ -46,8 +48,10 @@ public class MessageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Message message = mMessageList.get(position);
 
+        settingslist = Settings.getInstance().getSettings();
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        if (message.getSenderMac().equals("AA:AA:AA:AA:AA:AA")) { // TODO : Récupérer la MAC locale depuis les settings
+        if (message.getSenderMac().equals(settingslist.get(0))) { // TODO : Récupérer la MAC locale depuis les settings
 
             convertView = inflater.inflate(R.layout.item_conversation_receiver_messages, parent, false);
 
