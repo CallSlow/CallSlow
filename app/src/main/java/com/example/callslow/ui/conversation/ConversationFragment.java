@@ -1,7 +1,9 @@
 package com.example.callslow.ui.conversation;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     private ArrayList<String> settingslist;
     private String name;
     private String mac_adress;
+    private View view;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentConversationBinding.inflate(inflater, container, false);
@@ -71,6 +74,8 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         Button sendMessageButton = root.findViewById(R.id.sendMessageButton);
         sendMessageButton.setOnClickListener(this);
 
+        view = root;
+
         return root;
     }
 
@@ -99,7 +104,12 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
         // Écriture du message dans le fichier
         try {
-            this.createMessage(newMessage);
+            if (editMessage.getText().toString().equals("")) {
+                alertBox("Message invalide", "Veuillez saisir un message.");
+                return;
+            } else {
+                this.createMessage(newMessage);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,5 +124,19 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+    }
+
+    public void alertBox(String title, String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle(title)
+                .setMessage(content)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
