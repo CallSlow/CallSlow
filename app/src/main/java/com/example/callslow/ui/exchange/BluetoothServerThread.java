@@ -25,8 +25,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.UUID;
 import com.example.callslow.objects.Comparaison;
+import com.example.callslow.objects.Settings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,6 +79,12 @@ public class BluetoothServerThread extends Thread {
 
 
             while (true) {
+                Settings.getInstance().init(context);
+                ArrayList<String> settingslist = Settings.getInstance().getSettings();
+                String myMacAdress = settingslist.get(0);
+                Log.d("Affichage myMacAdres", myMacAdress);
+
+
                 status.setText("Serveur : Prêt");
                 status.setTextColor(Color.GREEN);
                 this.socket = this.serverSocket.accept();
@@ -177,10 +185,14 @@ public class BluetoothServerThread extends Thread {
                      Log.d("Affichage du premier tableau", array_json1.toString());
                      Log.d("Affichage du deuxiÃ¨me tableau", array_json2.toString());
 
-                    JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"},"18:CE:94:7D:AB:CF");
+                    System.out.println(Settings.getInstance().getSettings().get(0));
+
+                    JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"},myMacAdress);
                     Log.d("Affichage du tableau final", finalArray.toString());
                     Log.d("Taille tableau final",String.valueOf(finalArray.length()));
                     String param = "messages";
+
+
 
                     compare.writeJSONArrayToFile(param, array_json1,finalArray,"messages.json");
                 } catch (JSONException e) {

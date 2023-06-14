@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentEchangeSynchroBinding;
 import com.example.callslow.objects.Comparaison;
+import com.example.callslow.objects.Settings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class ExchangeSynchroFragment extends Fragment {
@@ -59,6 +61,12 @@ public class ExchangeSynchroFragment extends Fragment {
         ExchangeViewModel exchangeViewModel = new ViewModelProvider(this).get(ExchangeViewModel.class);
         binding = FragmentEchangeSynchroBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        Settings.getInstance().init(getContext());
+        ArrayList<String> settingslist = Settings.getInstance().getSettings();
+        String myMacAdress = settingslist.get(0);
+
+        Log.d("Affichage myMacAdres", myMacAdress);
 
         // Récupérer les informations de l'appareil transmises par le premier fragment
         Bundle args = getArguments();
@@ -178,7 +186,9 @@ public class ExchangeSynchroFragment extends Fragment {
                          Log.d("Affichage du premier tableau", array_json1.toString());
                          Log.d("Affichage du deuxiÃ¨me tableau", array_json2.toString());
 
-                        JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"},"C4:7D:9F:D3:57:60");
+                        System.out.println(Settings.getInstance().getSettings().get(0));
+
+                        JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"},myMacAdress);
                         Log.d("Affichage du tableau final", finalArray.toString());
                         Log.d("Taille tableau final",String.valueOf(finalArray.length()));
                         String param = "messages";
