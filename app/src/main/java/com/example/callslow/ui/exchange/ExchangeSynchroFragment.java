@@ -29,11 +29,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class ExchangeSynchroFragment extends Fragment {
@@ -93,12 +97,32 @@ public class ExchangeSynchroFragment extends Fragment {
                     FileInputStream fileStream1 = getContext().openFileInput("messages.json");
                     InputStream fileInputStream = new BufferedInputStream(fileStream1);
 
-                    byte[] buffer1 = new byte[BUFFER_SIZE];
-                    int bytesRead1 = 0;
 
-                    bytesRead1 = fileInputStream.read(buffer1);
-                    outputStream.write(buffer1, 0, bytesRead1);
+                    String result = "";
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+                        StringWriter writer = new StringWriter();
+
+                        char[] buffer = new char[4096];
+                        int bytesRead;
+                        while ((bytesRead = reader.read(buffer)) != -1) {
+                            writer.write(buffer, 0, bytesRead);
+                        }
+
+                        result = writer.toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                    outputStream.write(result.getBytes());
+                    outputStream.write(-128);
+
                     Log.d("Fichier - Envoi - Client","C'est bon");
+
+                    outputStream.flush();
+
                     fileInputStream.close();
 
 
@@ -115,8 +139,14 @@ public class ExchangeSynchroFragment extends Fragment {
                     int bytesRead = 0;
 
 
-                    bytesRead = inputStream.read(buffer);
-                    fileOutputStream.write(buffer, 0, bytesRead);
+                    if (inputStream.available() > 0) {
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, bytesRead);
+                            if (buffer[bytesRead-1] == -128) {
+                                break;
+                            }
+                        }
+                    }
                     fileOutputStream.flush();
                     fileOutputStream.close();
 

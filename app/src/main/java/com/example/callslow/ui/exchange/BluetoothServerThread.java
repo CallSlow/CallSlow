@@ -8,10 +8,13 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import com.example.callslow.objects.Comparaison;
 
@@ -59,6 +63,17 @@ public class BluetoothServerThread extends Thread {
         context = context1;
     }
 
+    private void writeToView(String message, int color) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                status.setTextColor(color);
+                status.setText(message);
+            }
+        });
+    }
+
     @Override
     public void run() {
         try {
@@ -77,11 +92,10 @@ public class BluetoothServerThread extends Thread {
 
 
             while (true) {
-                status.setText("Serveur : Prêt");
-                status.setTextColor(Color.GREEN);
+                writeToView("Serveur : Prêt", Color.GREEN);
                 this.socket = this.serverSocket.accept();
-                status.setText("Serveur : en cours...");
-                status.setTextColor(Color.YELLOW);
+                writeToView("Serveur : en cours...", Color.YELLOW);
+
                 System.out.println("-- Une connexion Bluetooth entrante a été établie avec succès --");
 
                 BluetoothDevice remoteDevice = socket.getRemoteDevice();
@@ -102,12 +116,25 @@ public class BluetoothServerThread extends Thread {
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytesRead = 0;
 
+                while (inputStream.available() == 0) {
+                    // attente
 
-                bytesRead = inputStream.read(buffer);
-                fileOutputStream.write(buffer, 0, bytesRead);
+                }
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    Log.d("ECHANGE", new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
+                    fileOutputStream.write(buffer, 0, bytesRead);
+                    if (buffer[bytesRead-1] == -128) {
+                        break;
+                    }
+                }
+
+
+//                bytesRead = inputStream.read(buffer);
+//                fileOutputStream.write(buffer, 0, bytesRead);
+
                 fileOutputStream.flush();
                 fileOutputStream.close();
-
+                //inputStream.close();
                // String retour1 = (message != null) ? "1" : "0";
 
                 // Envoie fichier message
@@ -117,10 +144,12 @@ public class BluetoothServerThread extends Thread {
                 byte[] buffer1 = new byte[BUFFER_SIZE];
                 int bytesRead1 = 0;
 
-
-                bytesRead1 = fileInputStream.read(buffer1);
-                outputStream_BAL.write(buffer1, 0, bytesRead1);
+                while ((bytesRead1 = fileInputStream.read(buffer1)) != -1) {
+                    outputStream_BAL.write(buffer1, 0, bytesRead1);
+                }
+                outputStream_BAL.write(-128);
                 Log.d("Fichier - Envoi - Client","C'est bon");
+                outputStream_BAL.flush();
                 fileInputStream.close();
 
               //  String retour2 = (messageRecu != null) ? "1" : "0";
@@ -156,7 +185,8 @@ public class BluetoothServerThread extends Thread {
               //   String retour4 = (messageRecu2 != null) ? "1" : "0";
 
                 // Ouverture de la page de sychronisation
-                status.setText("Serveur : Redirection");
+                writeToView("Serveur : Redirection", Color.BLUE);
+
                 System.out.println("-- Serveur : Redirection --");
 
 
