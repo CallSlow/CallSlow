@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -14,7 +15,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.callslow.MainActivity;
 import com.example.callslow.R;
@@ -40,6 +45,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     private String name;
     private String mac_adress;
     private View view;
+    private ActionBar actionBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentConversationBinding.inflate(inflater, container, false);
@@ -54,7 +60,10 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
             mac_adress = arguments.getString("mac_adress");
         }
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_chat) + " - " + name);
+        this.actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle(getString(R.string.title_chat) + " - " + name); //Ajout nom du contact dans l'action bar
+        this.setHasOptionsMenu(true);
+        actionBar.setDisplayHomeAsUpEnabled(true); //Ajout du bouton retour dans l'action bar
 
         messages.readFile();
         mMessageList = new ArrayList<Message>();
@@ -143,5 +152,13 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        this.actionBar.setTitle(getString(R.string.title_chat));
+        this.actionBar.setDisplayHomeAsUpEnabled(false);
+        requireActivity().getSupportFragmentManager().popBackStack();
+        return true;
     }
 }
