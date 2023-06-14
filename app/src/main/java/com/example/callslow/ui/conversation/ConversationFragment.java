@@ -58,6 +58,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
         Settings.getInstance().init(getContext());
         settingslist = Settings.getInstance().getSettings();
+        settingslist = Settings.getInstance().getSettings();
         for (Message msg: messages.getMessages()) {
             if (msg.getSenderMac().equals(settingslist.get(0)) || msg.getReceiverMac().equals(settingslist.get(0))) {// TODO : Récupérer la MAC locale depuis les settings
                 if (msg.getSenderMac().equals(mac_adress) || msg.getReceiverMac().equals(mac_adress)) {
