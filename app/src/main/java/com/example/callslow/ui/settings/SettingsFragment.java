@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -39,9 +38,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         settings.init(getContext());
         settingslist = settings.getSettings();
 
-        EditText editMacAdress = binding.myMacAddress;
+        EditText editMacAddress = binding.myMacAddress;
         if (settingslist.get(0) != null) {
-            editMacAdress.setText(settingslist.get(0));
+            editMacAddress.setText(settingslist.get(0));
         }
         EditText editPseudo = binding.myPseudo;
         if (settingslist.get(1) != null) {
@@ -72,7 +71,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 alertBox("Pseudo Invalide", "Veuillez saisir un pseudo.");
                 return;
             } else {
-                Settings.getInstance().changeMacAdress(editMacAddress.getText().toString());
+                Settings.getInstance().changeMacAddress(editMacAddress.getText().toString());
             }
 
             alertBox("Modification des settings", "Enregistrement effectué");
