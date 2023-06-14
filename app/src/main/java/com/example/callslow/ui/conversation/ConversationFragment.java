@@ -16,6 +16,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.callslow.MainActivity;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentConversationBinding;
 import com.example.callslow.objects.Contact;
@@ -52,13 +53,16 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
             name = arguments.getString("name");
             mac_adress = arguments.getString("mac_adress");
         }
+
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_chat) + " - " + name);
+
         messages.readFile();
         mMessageList = new ArrayList<Message>();
 
         Settings.getInstance().init(getContext());
         settingslist = Settings.getInstance().getSettings();
         for (Message msg: messages.getMessages()) {
-            if (msg.getSenderMac().equals(settingslist.get(0)) || msg.getReceiverMac().equals(settingslist.get(0))) {// TODO : Récupérer la MAC locale depuis les settings
+            if (msg.getSenderMac().equals(settingslist.get(0)) || msg.getReceiverMac().equals(settingslist.get(0))) {
                 if (msg.getSenderMac().equals(mac_adress) || msg.getReceiverMac().equals(mac_adress)) {
                     mMessageList.add(msg);
                 }
