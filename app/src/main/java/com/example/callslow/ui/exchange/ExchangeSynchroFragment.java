@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class ExchangeSynchroFragment extends Fragment {

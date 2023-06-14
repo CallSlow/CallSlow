@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.UUID;
 import com.example.callslow.objects.Comparaison;
 import com.example.callslow.objects.Settings;
@@ -62,6 +63,10 @@ public class BluetoothServerThread extends Thread {
         status = (TextView) view.findViewById(R.id.tagServeur);
         fragmentManager = manager;
         context = context1;
+
+
+
+
     }
 
     private void writeToView(String message, int color) {
@@ -82,6 +87,11 @@ public class BluetoothServerThread extends Thread {
             System.out.println(" -- Démarrage serveur reception message --");
 
             this.serverSocket = null;
+
+            Settings.getInstance().init(context);
+            ArrayList<String> settingslist = Settings.getInstance().getSettings();
+            String myMacAdress = settingslist.get(0);
+            Log.d("Affichage myMacAdres", myMacAdress);
 
 
 
