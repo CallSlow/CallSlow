@@ -21,7 +21,9 @@ import com.example.callslow.objects.ContactAdapter;
 import com.example.callslow.objects.Contacts;
 import com.example.callslow.objects.Messages;
 import com.example.callslow.ui.conversation.ConversationFragment;
+import com.example.callslow.ui.maps.MapsFragment;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ChatFragment extends Fragment implements AdapterView.OnItemClickListener {
@@ -41,6 +43,7 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
         listView = root.findViewById(R.id.list_chat);
         Contacts.getInstance().init(getContext());
         Messages.getInstance().init(getContext());
+
         ChatList = Contacts.getInstance().getContacts();
         adapter = new ChatAdapter(getActivity(), ChatList);
         listView.setAdapter(adapter);

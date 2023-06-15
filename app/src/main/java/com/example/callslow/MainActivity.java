@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.callslow.ui.exchange.BluetoothServerThread;
@@ -28,6 +29,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.callslow.databinding.ActivityMainBinding;
 
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        File file_maps = new File(this.getFilesDir(), "map.json");
+
+        if (!file_maps.exists()) {
+            try {
+                this.createFile(file_maps);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         System.out.println("---- Début du programme ---- \n");
         this.checkBluetooth();
@@ -100,24 +116,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkAndRequestBluetoothPermissions(Context context) {
-        // Set allPermissionsGranted to true, assuming all necessary permissions are granted by default
-        boolean allPermissionsGranted = true;
-        // Create an array of strings containing the necessary permissions for Bluetooth discovery
-        String[] permissions = new String[]{android.Manifest.permission.BLUETOOTH, android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH_CONNECT};
-        for (String permission : permissions) {
-            // Check if the necessary permission is not granted and set allPermissionsGranted to false
-            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                // Setting the allPermissionsGranted flag to false
-                allPermissionsGranted = false;
-                // Requesting the necessary permissions for Bluetooth discovery from the user
-                ActivityCompat.requestPermissions((Activity) context, permissions, 1);
+    protected void createFile(File file) throws IOException {
+        file.createNewFile();
 
-                System.out.println("***********  Requesting bluetooth permissions");
-                break;
-            }
-        }
-        return allPermissionsGranted;
+        JSONObject jsonObject = new JSONObject();
+
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(jsonObject.toString());
+        fileWriter.flush();
+        fileWriter.close();
     }
 
 }
