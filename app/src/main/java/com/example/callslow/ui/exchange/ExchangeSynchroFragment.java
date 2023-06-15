@@ -147,6 +147,10 @@ public class ExchangeSynchroFragment extends Fragment {
                     int bytesRead = 0;
 
 
+                    while (inputStream.available() == 0) {
+                        // on attend
+                    }
+
                     if (inputStream.available() > 0) {
                         while ((bytesRead = inputStream.read(buffer)) != -1) {
                             fileOutputStream.write(buffer, 0, bytesRead);
