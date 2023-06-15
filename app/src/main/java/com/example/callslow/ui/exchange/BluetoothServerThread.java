@@ -88,13 +88,6 @@ public class BluetoothServerThread extends Thread {
 
             this.serverSocket = null;
 
-            Settings.getInstance().init(context);
-            ArrayList<String> settingslist = Settings.getInstance().getSettings();
-            String myMacAdress = settingslist.get(0);
-            Log.d("Affichage myMacAdres", myMacAdress);
-
-
-
             try {
                 this.serverSocket= bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("CallSlow", MY_UUID);
             } catch (IOException e) {
@@ -139,13 +132,8 @@ public class BluetoothServerThread extends Thread {
                     }
                 }
 
-
-//                bytesRead = inputStream.read(buffer);
-//                fileOutputStream.write(buffer, 0, bytesRead);
-
                 fileOutputStream.flush();
                 fileOutputStream.close();
-                //inputStream.close();
                // String retour1 = (message != null) ? "1" : "0";
 
                 // Envoie fichier message
@@ -156,11 +144,11 @@ public class BluetoothServerThread extends Thread {
                 int bytesRead1 = 0;
 
                 while ((bytesRead1 = fileInputStream.read(buffer1)) != -1) {
-                    outputStream_BAL.write(buffer1, 0, bytesRead1);
+                    outputStream.write(buffer1, 0, bytesRead1);
                 }
-                outputStream_BAL.write(-128);
+                outputStream.write(-128);
                 Log.d("Fichier - Envoi - Client","C'est bon");
-                outputStream_BAL.flush();
+                outputStream.flush();
                 fileInputStream.close();
 
               //  String retour2 = (messageRecu != null) ? "1" : "0";
@@ -173,13 +161,21 @@ public class BluetoothServerThread extends Thread {
                 byte[] buffer_bal1 = new byte[BUFFER_SIZE];
                 int bytesRead_bal1 = 0;
 
-                bytesRead_bal1 = inputStream_BAL.read(buffer_bal1);
-                fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+                while (inputStream_BAL.available() == 0) {
+                    // attente
+
+                }
+                while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
+                    fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+                    if (buffer_bal1[bytesRead_bal1-1] == -128) {
+                        break;
+                    }
+                }
+
                 fileOutputStream_bal1.flush();
                 fileOutputStream_bal1.close();
 
                 //  String retour3 = (message2 != null) ? "1" : "0";
-
 
                 // Envoie fichier Boite
 
@@ -189,8 +185,13 @@ public class BluetoothServerThread extends Thread {
                 byte[] buffer_bal = new byte[BUFFER_SIZE];
                 int bytesRead_bal = 0;
 
-                bytesRead_bal = fileInputStream_bal.read(buffer_bal);
-                outputStream_BAL.write(buffer_bal, 0, bytesRead_bal);
+                while ((bytesRead_bal = fileInputStream_bal.read(buffer_bal)) != -1) {
+                    outputStream_BAL.write(buffer_bal, 0, bytesRead_bal);
+                }
+
+                outputStream_BAL.write(-128);
+                Log.d("Fichier - Envoi - Client","C'est bon");
+                outputStream_BAL.flush();
                 fileInputStream_bal.close();
 
               //   String retour4 = (messageRecu2 != null) ? "1" : "0";
@@ -199,6 +200,7 @@ public class BluetoothServerThread extends Thread {
                 writeToView("Serveur : Redirection", Color.BLUE);
 
                 System.out.println("-- Serveur : Redirection --");
+
 
 
                 // Comparaison fichier message
@@ -220,7 +222,7 @@ public class BluetoothServerThread extends Thread {
 
                     System.out.println(Settings.getInstance().getSettings().get(0));
 
-                    JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"},myMacAdress);
+                    JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"});
                     Log.d("Affichage du tableau final", finalArray.toString());
                     Log.d("Taille tableau final",String.valueOf(finalArray.length()));
                     String param = "messages";
@@ -249,7 +251,7 @@ public class BluetoothServerThread extends Thread {
                     Log.d("Affichage du premier tableau", array_json3.toString());
                     Log.d("Affichage du deuxiÃ¨me tableau", array_json4.toString());
 
-                    JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"},"");
+                    JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"});
                     Log.d("Affichage du tableau final", finalArray.toString());
                     Log.d("Taille tableau final",String.valueOf(finalArray.length()));
                     String param = "point";

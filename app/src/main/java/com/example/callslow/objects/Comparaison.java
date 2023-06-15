@@ -56,18 +56,14 @@ public class Comparaison {
         return json;
     }
 
-    public JSONArray getNewValues(JSONArray list1, JSONArray list2, String[] properties, String macAddress) {
+    public JSONArray getNewValues(JSONArray list1, JSONArray list2, String[] properties) {
         JSONArray newValue = new JSONArray();
-
-        Log.d("Affichage comparaison myMacAdres", macAddress);
-
 
 
         for (int i = 0; i < list2.length(); i++) {
             JSONObject jsonObject2 = list2.optJSONObject(i);
-            Log.d("Affichage receiver MAC",jsonObject2.optString("receiverMac"));
 
-            if (jsonObject2 != null && (macAddress.equals(jsonObject2.optString("receiverMac")) || (macAddress.length() == 0))) {
+            if (jsonObject2 != null) {
                 boolean found = false;
 
                 if (list1.length() > 0) {

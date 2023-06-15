@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -65,12 +66,6 @@ public class ExchangeSynchroFragment extends Fragment {
         ExchangeViewModel exchangeViewModel = new ViewModelProvider(this).get(ExchangeViewModel.class);
         binding = FragmentEchangeSynchroBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        Settings.getInstance().init(getContext());
-        ArrayList<String> settingslist = Settings.getInstance().getSettings();
-        String myMacAdress = settingslist.get(0);
-
-        Log.d("Affichage myMacAdres", myMacAdress);
 
         // Récupérer les informations de l'appareil transmises par le premier fragment
         Bundle args = getArguments();
@@ -122,15 +117,9 @@ public class ExchangeSynchroFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-
-
                     outputStream.write(result.getBytes());
                     outputStream.write(-128);
-
-                    Log.d("Fichier - Envoi - Client","C'est bon");
-
                     outputStream.flush();
-
                     fileInputStream.close();
 
 
@@ -172,11 +161,24 @@ public class ExchangeSynchroFragment extends Fragment {
                     FileInputStream fileStream_bal = getContext().openFileInput("map.json");
                     InputStream fileInputStream_bal = new BufferedInputStream(fileStream_bal);
 
-                    byte[] buffer_bal = new byte[BUFFER_SIZE];
-                    int bytesRead_bal = 0;
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream_bal));
+                        StringWriter writer = new StringWriter();
 
-                    bytesRead_bal = fileInputStream_bal.read(buffer_bal);
-                    outputStream_BAL.write(buffer_bal, 0, bytesRead_bal);
+                        char[] buffer_bal = new char[4096];
+                        int bytesRead_bal;
+                        while ((bytesRead_bal = reader.read(buffer_bal)) != -1) {
+                            writer.write(buffer_bal, 0, bytesRead_bal);
+                        }
+
+                        result = writer.toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    outputStream_BAL.write(result.getBytes());
+                    outputStream_BAL.write(-128);
+                    outputStream_BAL.flush();
                     fileInputStream_bal.close();
 
                     // Si success
@@ -191,12 +193,21 @@ public class ExchangeSynchroFragment extends Fragment {
                     byte[] buffer_bal1 = new byte[BUFFER_SIZE];
                     int bytesRead_bal1 = 0;
 
+                    while (inputStream_BAL.available() == 0) {
+                        // on attend
+                    }
 
-                    bytesRead_bal1 = inputStream_BAL.read(buffer_bal1);
-                    fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+                    if (inputStream_BAL.available() > 0) {
+                        while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
+                            fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+                            if (buffer_bal1[bytesRead_bal1-1] == -128) {
+                                break;
+                            }
+                        }
+                    }
+
                     fileOutputStream_bal1.flush();
                     fileOutputStream_bal1.close();
-
 
                     textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
                     textCheckBoiteRecu.setTextColor(Color.GREEN);
@@ -222,7 +233,7 @@ public class ExchangeSynchroFragment extends Fragment {
 
                         System.out.println(Settings.getInstance().getSettings().get(0));
 
-                        JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"},myMacAdress);
+                        JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"});
                         Log.d("Affichage du tableau final", finalArray.toString());
                         Log.d("Taille tableau final",String.valueOf(finalArray.length()));
                         String param = "messages";
@@ -251,7 +262,7 @@ public class ExchangeSynchroFragment extends Fragment {
                         Log.d("Affichage du premier tableau", array_json3.toString());
                         Log.d("Affichage du deuxiÃ¨me tableau", array_json4.toString());
 
-                        JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"},"");
+                        JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"});
                         Log.d("Affichage du tableau final", finalArray.toString());
                         Log.d("Taille tableau final",String.valueOf(finalArray.length()));
                         String param = "point";
@@ -342,10 +353,20 @@ public class ExchangeSynchroFragment extends Fragment {
         transaction.commit();
     }
 
+
     @Override
     public void onDestroyView() {
         Log.d("Destruction vue","Oui");
         super.onDestroyView();
+
+        Fragment exchangeFragment = new ExchangeFragment();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
+        transaction.setReorderingAllowed(true);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
         binding = null;
+
     }
 }
