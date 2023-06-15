@@ -154,7 +154,9 @@ public class MapsFragment extends Fragment implements OnClickListener {
         background.setAlpha(240);
 
         switch (type) {
+            //Si on clique sur le bouton formulaire
             case "formulaire":
+                //Si une popup existe déjà mais est cachée alors on la dismiss pour pouvoir en créer une nouvelle
                 if (popupWindow != null) {
                     popupWindow.dismiss();
                 }
@@ -197,13 +199,8 @@ public class MapsFragment extends Fragment implements OnClickListener {
     /**
      * Affiche la fenêtre popup pour l'ajout d'un nouveau point.
      */
-// Déclarez la variable popupType dans la classe contenant showPopup()
-
-
     public void showPopup(String type) {
-        System.out.println("Je passe dans le showpopup");
-
-        // Vérifiez si la popup actuelle correspond au type demandé
+        // Vérifier si la popup actuelle correspond au type demandé
         if (popupWindow != null && popupType.equals(type) && popupWindow.isShowing()) {
             // La popup actuelle est déjà affichée, pas besoin de faire quoi que ce soit
             return;
