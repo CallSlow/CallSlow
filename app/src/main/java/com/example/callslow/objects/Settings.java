@@ -18,7 +18,7 @@ public class Settings extends Application {
 
     private final String SETTINGS_FILE = "settings.json";
 
-    private String macAdress;
+    private String macAddress;
     private String pseudo;
     private JSONObject settings_json;
 
@@ -40,7 +40,7 @@ public class Settings extends Application {
             settings_json = new JSONObject(json);
             JSONObject setting = settings_json.getJSONObject("settings");
             try {
-                macAdress = setting.getString("macAdress");
+                macAddress = setting.getString("macAddress");
                 pseudo = setting.getString("pseudo");
             } catch (Exception e) {}
 
@@ -93,7 +93,7 @@ public class Settings extends Application {
         // préparation de l'array json
         JSONObject obj = new JSONObject();
         JSONObject array = new JSONObject();
-        array.put("macAdress",macAdress);
+        array.put("macAddress",macAddress);
         array.put("pseudo",pseudo);
 
         obj.put("settings",array);
@@ -112,7 +112,7 @@ public class Settings extends Application {
      */
     public ArrayList<String> getSettings() {
         ArrayList<String> setting = new ArrayList<String>();
-        setting.add(macAdress);
+        setting.add(macAddress);
         setting.add(pseudo);
         return setting;
     }
@@ -122,8 +122,8 @@ public class Settings extends Application {
      * then writes the file
      */
 
-    public boolean changeMacAdress(String newMacAdress) throws Exception {
-        macAdress = newMacAdress;
+    public boolean changeMacAddress(String newMacAddress) throws Exception {
+        macAddress = newMacAddress;
         writeFile();
         return true;
     }
