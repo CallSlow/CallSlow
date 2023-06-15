@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import java.nio.channels.FileChannel;
 
 import androidx.annotation.ColorInt;
 import androidx.fragment.app.Fragment;
@@ -126,9 +127,11 @@ public class BluetoothServerThread extends Thread {
                 }
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     Log.d("ECHANGE", new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
-                    fileOutputStream.write(buffer, 0, bytesRead);
                     if (buffer[bytesRead-1] == -128) {
+                        fileOutputStream.write(buffer, 0, bytesRead - 1);
                         break;
+                    } else {
+                        fileOutputStream.write(buffer, 0, bytesRead);
                     }
                 }
 
@@ -166,9 +169,11 @@ public class BluetoothServerThread extends Thread {
 
                 }
                 while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
-                    fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
                     if (buffer_bal1[bytesRead_bal1-1] == -128) {
+                        fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1 - 1);
                         break;
+                    } else {
+                        fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
                     }
                 }
 

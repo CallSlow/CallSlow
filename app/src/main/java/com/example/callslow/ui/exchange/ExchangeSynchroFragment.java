@@ -142,9 +142,11 @@ public class ExchangeSynchroFragment extends Fragment {
 
                     if (inputStream.available() > 0) {
                         while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            fileOutputStream.write(buffer, 0, bytesRead);
                             if (buffer[bytesRead-1] == -128) {
+                                fileOutputStream.write(buffer, 0, bytesRead-1);
                                 break;
+                            } else {
+                                fileOutputStream.write(buffer, 0, bytesRead);
                             }
                         }
                     }
@@ -199,9 +201,12 @@ public class ExchangeSynchroFragment extends Fragment {
 
                     if (inputStream_BAL.available() > 0) {
                         while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
-                            fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
                             if (buffer_bal1[bytesRead_bal1-1] == -128) {
+                                fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1-1);
                                 break;
+                            } else {
+                                fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+
                             }
                         }
                     }
