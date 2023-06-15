@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,17 @@ import org.json.JSONObject;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.MapTileCache;
+import org.osmdroid.tileprovider.MapTileProviderArray;
+import org.osmdroid.tileprovider.MapTileProviderBasic;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
+import org.osmdroid.tileprovider.modules.IArchiveFile;
+import org.osmdroid.tileprovider.modules.MapTileFileArchiveProvider;
+import org.osmdroid.tileprovider.modules.MapTileFilesystemProvider;
+import org.osmdroid.tileprovider.modules.MapTileModuleProviderBase;
+import org.osmdroid.tileprovider.modules.TileWriter;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
@@ -33,6 +44,7 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -65,6 +77,13 @@ public class MapsFragment extends Fragment implements OnClickListener {
 
         //Choix du style de carte (ici on utilise un rendu MAPNIK)
         map.setTileSource(TileSourceFactory.MAPNIK);
+
+        File cachePath = new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles");
+        Configuration.getInstance().setOsmdroidTileCache(cachePath);
+        short tileCount = (short) 100000; // Nombre maximal de tuiles à mettre en cache
+        Configuration.getInstance().setCacheMapTileCount(tileCount);
+
+
 
         //Affichage des boutons de zoom et dézoom
         map.setMultiTouchControls(true);
@@ -135,7 +154,9 @@ public class MapsFragment extends Fragment implements OnClickListener {
         background.setAlpha(240);
 
         switch (type) {
+            //Si on clique sur le bouton formulaire
             case "formulaire":
+                //Si une popup existe déjà mais est cachée alors on la dismiss pour pouvoir en créer une nouvelle
                 if (popupWindow != null) {
                     popupWindow.dismiss();
                 }
@@ -178,13 +199,8 @@ public class MapsFragment extends Fragment implements OnClickListener {
     /**
      * Affiche la fenêtre popup pour l'ajout d'un nouveau point.
      */
-// Déclarez la variable popupType dans la classe contenant showPopup()
-
-
     public void showPopup(String type) {
-        System.out.println("Je passe dans le showpopup");
-
-        // Vérifiez si la popup actuelle correspond au type demandé
+        // Vérifier si la popup actuelle correspond au type demandé
         if (popupWindow != null && popupType.equals(type) && popupWindow.isShowing()) {
             // La popup actuelle est déjà affichée, pas besoin de faire quoi que ce soit
             return;
