@@ -381,14 +381,6 @@ public class ExchangeSynchroFragment extends Fragment {
     public void onDestroyView() {
         Log.d("Destruction vue","Oui");
         super.onDestroyView();
-
-        Fragment exchangeFragment = new ExchangeFragment();
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
-        transaction.setReorderingAllowed(true);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
         binding = null;
 
     }
