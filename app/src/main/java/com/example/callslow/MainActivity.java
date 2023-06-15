@@ -29,6 +29,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.callslow.databinding.ActivityMainBinding;
 
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        File file_maps = new File(this.getFilesDir(), "map.json");
+
+        if (!file_maps.exists()) {
+            try {
+                this.createFile(file_maps);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         System.out.println("---- Début du programme ---- \n");
         this.checkBluetooth();
@@ -99,6 +114,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    protected void createFile(File file) throws IOException {
+        file.createNewFile();
+
+        JSONObject jsonObject = new JSONObject();
+
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(jsonObject.toString());
+        fileWriter.flush();
+        fileWriter.close();
     }
 
 }
