@@ -227,23 +227,32 @@ public class ExchangeSynchroFragment extends Fragment {
                         JSONObject message_json1 = new JSONObject(json_list_1);
                         JSONObject message_json2 = new JSONObject(json_list_2);
 
-                        Log.d("Comparaison Objet JSON",String.valueOf(message_json1));
-                        Log.d("Comparaison Objet JSON 2",String.valueOf(message_json2));
+                        if (message_json1.has("messages") && message_json2.has("messages")) {
+                            Log.d("Comparaison Objet JSON", String.valueOf(message_json1));
+                            Log.d("Comparaison Objet JSON 2", String.valueOf(message_json2));
 
-                        JSONArray array_json1 = message_json1.getJSONArray("messages");
-                        JSONArray array_json2 = message_json2.getJSONArray("messages");
+                            JSONArray array_json1 = message_json1.getJSONArray("messages");
+                            JSONArray array_json2 = message_json2.getJSONArray("messages");
 
-                         Log.d("Affichage du premier tableau", array_json1.toString());
-                         Log.d("Affichage du deuxiÃ¨me tableau", array_json2.toString());
+                            Log.d("Affichage du premier tableau", array_json1.toString());
+                            Log.d("Affichage du deuxiÃ¨me tableau", array_json2.toString());
 
-                        System.out.println(Settings.getInstance().getSettings().get(0));
+                            System.out.println(Settings.getInstance().getSettings().get(0));
 
-                        JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"});
-                        Log.d("Affichage du tableau final", finalArray.toString());
-                        Log.d("Taille tableau final",String.valueOf(finalArray.length()));
-                        String param = "messages";
-
-                        compare.writeJSONArrayToFile(param, array_json1,finalArray,"messages.json");
+                            JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"});
+                            Log.d("Affichage du tableau final", finalArray.toString());
+                            Log.d("Taille tableau final", String.valueOf(finalArray.length()));
+                            String param = "messages";
+                            compare.writeJSONArrayToFile(param, array_json1, finalArray, "messages.json");
+                        }
+                        else if (!message_json1.has("messages") && message_json2.has("messages")) {
+                            String param = "messages";
+                            JSONArray messagesArray = new JSONArray();
+                            // Ajouter le tableau "messages" à l'objet JSON
+                            message_json1.put("messages", messagesArray);
+                            JSONArray array_json = message_json2.getJSONArray("messages");
+                            compare.writeJSONArrayToFile(param, messagesArray, array_json, "messages.json");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -260,19 +269,28 @@ public class ExchangeSynchroFragment extends Fragment {
                         Log.d("Comparaison Objet JSON",String.valueOf(message_json3));
                         Log.d("Comparaison Objet JSON 2",String.valueOf(message_json4));
 
+                        if(message_json3.has("point") && message_json4.has("point")) {
+                            JSONArray array_json3 = message_json3.getJSONArray("point");
+                            JSONArray array_json4 = message_json4.getJSONArray("point");
 
-                        JSONArray array_json3 = message_json3.getJSONArray("point");
-                        JSONArray array_json4 = message_json4.getJSONArray("point");
+                            Log.d("Affichage du premier tableau", array_json3.toString());
+                            Log.d("Affichage du deuxiÃ¨me tableau", array_json4.toString());
 
-                        Log.d("Affichage du premier tableau", array_json3.toString());
-                        Log.d("Affichage du deuxiÃ¨me tableau", array_json4.toString());
+                            JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"});
+                            Log.d("Affichage du tableau final", finalArray.toString());
+                            Log.d("Taille tableau final", String.valueOf(finalArray.length()));
+                            String param = "point";
 
-                        JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"});
-                        Log.d("Affichage du tableau final", finalArray.toString());
-                        Log.d("Taille tableau final",String.valueOf(finalArray.length()));
-                        String param = "point";
+                            compare.writeJSONArrayToFile(param, array_json3, finalArray, "map.json");
+                        } else if (!message_json3.has("point") && message_json4.has("point")) {
+                            JSONArray messagesArray = new JSONArray();
+                            // Ajouter le tableau "messages" à l'objet JSON
+                            message_json3.put("point", messagesArray);
+                            JSONArray array_json = message_json4.getJSONArray("point");
+                            String param = "point";
+                            compare.writeJSONArrayToFile(param, messagesArray, array_json, "map.json");
+                        }
 
-                        compare.writeJSONArrayToFile(param, array_json3,finalArray,"map.json");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
