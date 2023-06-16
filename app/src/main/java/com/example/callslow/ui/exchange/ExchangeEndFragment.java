@@ -30,16 +30,16 @@ public class ExchangeEndFragment extends Fragment {
         binding = FragmentEchangeEndBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        MainActivity mainActivity = (MainActivity) getActivity();
-        BottomNavigationView navView = mainActivity.findViewById(R.id.nav_view);
-        navView.setEnabled(false);
-        navView.setVisibility(View.VISIBLE);
-
         Button mBtnRetour;
         mBtnRetour = root.findViewById(R.id.buttonEnd);
         mBtnRetour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                BottomNavigationView navView = mainActivity.findViewById(R.id.nav_view);
+                navView.setEnabled(false);
+                navView.setVisibility(View.VISIBLE);
+
                 Fragment exchangeFragment = new ExchangeFragment();
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.nav_host_fragment_activity_main, exchangeFragment);
