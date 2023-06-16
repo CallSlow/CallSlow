@@ -46,7 +46,7 @@
                     android:id="@+id/BtnServeur"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Démarrer Serveur" />
+                    android:text="ACCEPTER DEMANDE D'ÉCHANGE" />
 
                 <Button
                     android:id="@+id/BtnRecherche"

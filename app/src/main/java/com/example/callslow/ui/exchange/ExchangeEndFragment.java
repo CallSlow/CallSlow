@@ -12,9 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.callslow.MainActivity;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentEchangeEndBinding;
 import com.example.callslow.databinding.FragmentEchangeSynchroBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ExchangeEndFragment extends Fragment {
 
@@ -28,6 +30,10 @@ public class ExchangeEndFragment extends Fragment {
         binding = FragmentEchangeEndBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        MainActivity mainActivity = (MainActivity) getActivity();
+        BottomNavigationView navView = mainActivity.findViewById(R.id.nav_view);
+        navView.setEnabled(false);
+        navView.setVisibility(View.VISIBLE);
 
         Button mBtnRetour;
         mBtnRetour = root.findViewById(R.id.buttonEnd);

@@ -20,10 +20,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.callslow.MainActivity;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentEchangeSynchroBinding;
 import com.example.callslow.objects.Comparaison;
 import com.example.callslow.objects.Settings;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +68,12 @@ public class ExchangeSynchroFragment extends Fragment {
         ExchangeViewModel exchangeViewModel = new ViewModelProvider(this).get(ExchangeViewModel.class);
         binding = FragmentEchangeSynchroBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        BottomNavigationView navView = mainActivity.findViewById(R.id.nav_view);
+        navView.setEnabled(false);
+        navView.setVisibility(View.INVISIBLE);
+
 
         // Récupérer les informations de l'appareil transmises par le premier fragment
         Bundle args = getArguments();
@@ -351,9 +359,6 @@ public class ExchangeSynchroFragment extends Fragment {
             }
         }
 
-        Button mBtnRetour = root.findViewById(R.id.BtnRetour);
-        mBtnRetour.setOnClickListener(v -> retour());
-
         Button mBtnSuivant = root.findViewById(R.id.BtnSuivant);
         mBtnSuivant.setOnClickListener(v -> {
             Fragment exchangeFragment = new ExchangeEndFragment();
@@ -363,6 +368,7 @@ public class ExchangeSynchroFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         });
+
 
         return root;
     }

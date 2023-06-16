@@ -306,8 +306,6 @@ public class BluetoothServerThread extends Thread {
 
                 System.out.println("-- Serveur : Redirection Fin --");
 
-
-
                 // Fermez le socket du serveur après la communication
 
             }
