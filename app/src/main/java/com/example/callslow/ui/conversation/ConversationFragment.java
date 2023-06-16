@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -39,6 +40,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
     private FragmentConversationBinding binding;
     private ListView mListView;
+    private ScrollView mScrollView;
     private MessageAdapter mAdapter;
     private ArrayList<Message> mMessageList;
     private ArrayList<String> settingslist;
@@ -51,6 +53,8 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         binding = FragmentConversationBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mListView = root.findViewById(R.id.conversation_list);
+        mScrollView = root.findViewById(R.id.conversation_scroll_view);
+
         Messages messages = Messages.getInstance();
 
         // Lecture des messages existants
@@ -82,6 +86,10 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         // Ajout des messages sur la view
         mAdapter = new MessageAdapter(getActivity(), mMessageList);
         mListView.setAdapter(mAdapter);
+
+        int lastPosition = mListView.getAdapter().getCount() - 1;
+        mListView.setSelection(lastPosition);
+
 
         // Bouton Envoyer
         Button sendMessageButton = root.findViewById(R.id.sendMessageButton);
@@ -129,6 +137,9 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
 
                     // Suppression du message écrit de la zone de texte
                     editMessage.setText(null);
+
+                    int lastPosition = mListView.getAdapter().getCount() - 1;
+                    mListView.setSelection(lastPosition);
                 }
             }
         } catch (Exception e) {
