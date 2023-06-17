@@ -166,7 +166,9 @@ public class Contacts extends Application {
         }
 
         contact_list.set(index, newContact);
+
         writeFile();
+
         return true;
     }
 

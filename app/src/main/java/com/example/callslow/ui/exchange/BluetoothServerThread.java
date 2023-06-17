@@ -163,7 +163,6 @@ public class BluetoothServerThread extends Thread {
                         outputStream.write(buffer1, 0, bytesRead1);
                     }
                     outputStream.write(-128);
-                    Log.d("Fichier - Envoi - Client", "C'est bon");
                     outputStream.flush();
                     fileInputStream.close();
                 } catch (IOException e) {
@@ -220,7 +219,6 @@ public class BluetoothServerThread extends Thread {
                     }
 
                     outputStream_BAL.write(-128);
-                    Log.d("Fichier - Envoi - Client", "C'est bon");
                     outputStream_BAL.flush();
                     fileInputStream_bal.close();
                 } catch (IOException e) {

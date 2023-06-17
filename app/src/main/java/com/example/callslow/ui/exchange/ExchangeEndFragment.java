@@ -71,7 +71,6 @@ public class ExchangeEndFragment extends Fragment {
                 JSONArray array_json2 = message_json2.getJSONArray("messages");
 
                 JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"});
-                Log.d("Affichagstae du tableau final", finalArray.toString());
 
                 this.nbMessagesEnvoyes=finalArray.length();
 
@@ -121,11 +120,7 @@ public class ExchangeEndFragment extends Fragment {
                 JSONArray array_json3 = message_json3.getJSONArray("point");
                 JSONArray array_json4 = message_json4.getJSONArray("point");
 
-                Log.d("Affichage du premier tableau", array_json3.toString());
-                Log.d("Affichage du deuxiÃ¨me tableau", array_json4.toString());
-
                 JSONArray finalArray = compare.getNewValues(array_json3, array_json4, new String[]{"uuid"});
-                Log.d("Affichage du tableau final", finalArray.toString());
                 this.nbPointsEnvoyes = finalArray.length();
                 String param = "point";
                 compare.writeJSONArrayToFile(param, array_json3, finalArray, "map.json");

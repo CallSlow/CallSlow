@@ -86,10 +86,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         addContactBtn = (Button) root.findViewById(R.id.addBtn);
         addContactBtn.setOnClickListener(this);
 
-
         view = root;
-
-
 
         return root;
     }

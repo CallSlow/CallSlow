@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.callslow.objects.Message;
+import com.example.callslow.objects.Messages;
 import com.example.callslow.ui.exchange.BluetoothServerThread;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Messages.getInstance().init(this);
 
         File[] files = new File[4];
         files[0] = new File(this.getFilesDir(), "map.json");
@@ -72,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+        }
+
+        try {
+
+            Messages.getInstance().deleteMessagesDate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         System.out.println("---- Début du programme ---- \n");

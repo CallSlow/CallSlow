@@ -13,7 +13,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.UUID;
 
 public class Messages extends Application {
 
@@ -137,5 +143,40 @@ public class Messages extends Application {
 
     public void setMessages(ArrayList<Message> message_list) {
         this.message_list = message_list;
+    }
+
+    public void addOldMessage() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        String content = "Contenu du message";
+        String senderMac = "Mettre adresse MAC";
+        String receiverMac = "Mettre adresse MAC";
+        String sendingDate = "01/01/2020 00:14:38"; // Date d'envoi du message
+
+        Message message = new Message(uuid, content, senderMac, receiverMac, sendingDate);
+        message_list.add(message);
+        writeFile();
+    }
+
+    public boolean deleteMessagesDate() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.YEAR, -2); // Soustraire 2 ans
+
+        long twoYearsAgoMillis = calendar.getTimeInMillis();
+
+        Iterator<Message> iterator = message_list.iterator();
+        while (iterator.hasNext()) {
+            Message m = iterator.next();
+            Date messageDate = sdf.parse(m.getSendingDate());
+            long messageDateMillis = messageDate.getTime();
+            if (messageDateMillis < twoYearsAgoMillis) {
+                iterator.remove();
+            }
+        }
+
+        writeFile();
+        return false;
     }
 }
