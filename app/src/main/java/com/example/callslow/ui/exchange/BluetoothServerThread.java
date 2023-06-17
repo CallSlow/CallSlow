@@ -107,112 +107,143 @@ public class BluetoothServerThread extends Thread {
                 String deviceAddress = remoteDevice.getAddress();
                 String deviceName = remoteDevice.getName();
 
+                String retour1 = "1";
+                String retour2 = "1";
+                String retour3 = "1";
+                String retour4 = "1";
+
                 InputStream inputStream = this.socket.getInputStream();
                 OutputStream outputStream = this.socket.getOutputStream();
 
                 InputStream inputStream_BAL = this.socket.getInputStream();
                 OutputStream outputStream_BAL = this.socket.getOutputStream();
 
+                try {
+                    // Réception fichier message
+                    FileOutputStream fileStream = this.context.openFileOutput("messages_exchange.json", Context.MODE_PRIVATE);
+                    OutputStream fileOutputStream = new BufferedOutputStream(fileStream);
 
-                // Réception fichier message
-                FileOutputStream fileStream = this.context.openFileOutput("messages_exchange.json", Context.MODE_PRIVATE);
-                OutputStream fileOutputStream = new BufferedOutputStream(fileStream);
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    int bytesRead = 0;
 
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int bytesRead = 0;
+                    while (inputStream.available() == 0) {
+                        // attente
 
-                while (inputStream.available() == 0) {
-                    // attente
-
-                }
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    Log.d("ECHANGE", new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
-                    if (buffer[bytesRead-1] == -128) {
-                        fileOutputStream.write(buffer, 0, bytesRead - 1);
-                        break;
-                    } else {
-                        fileOutputStream.write(buffer, 0, bytesRead);
                     }
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        Log.d("ECHANGE", new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
+                        if (buffer[bytesRead - 1] == -128) {
+                            fileOutputStream.write(buffer, 0, bytesRead - 1);
+                            break;
+                        } else {
+                            fileOutputStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    retour3 = "0";
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    retour3 = "0";
+                    e.printStackTrace();
                 }
 
-                fileOutputStream.flush();
-                fileOutputStream.close();
-               // String retour1 = (message != null) ? "1" : "0";
 
                 // Envoie fichier message
-                FileInputStream fileStream1 = this.context.openFileInput("messages.json");
-                InputStream fileInputStream = new BufferedInputStream(fileStream1);
+                try {
+                    FileInputStream fileStream1 = this.context.openFileInput("messages.json");
+                    InputStream fileInputStream = new BufferedInputStream(fileStream1);
 
-                byte[] buffer1 = new byte[BUFFER_SIZE];
-                int bytesRead1 = 0;
+                    byte[] buffer1 = new byte[BUFFER_SIZE];
+                    int bytesRead1 = 0;
 
-                while ((bytesRead1 = fileInputStream.read(buffer1)) != -1) {
-                    outputStream.write(buffer1, 0, bytesRead1);
+                    while ((bytesRead1 = fileInputStream.read(buffer1)) != -1) {
+                        outputStream.write(buffer1, 0, bytesRead1);
+                    }
+                    outputStream.write(-128);
+                    Log.d("Fichier - Envoi - Client", "C'est bon");
+                    outputStream.flush();
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    retour1 = "1";
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    retour1 = "1";
+                    e.printStackTrace();
                 }
-                outputStream.write(-128);
-                Log.d("Fichier - Envoi - Client","C'est bon");
-                outputStream.flush();
-                fileInputStream.close();
-
-              //  String retour2 = (messageRecu != null) ? "1" : "0";
 
                 // Réception fichier Boite
 
-                FileOutputStream fileStream_bal1 = context.openFileOutput("map_exchange.json", Context.MODE_PRIVATE);
-                OutputStream fileOutputStream_bal1 = new BufferedOutputStream(fileStream_bal1);
+                try {
+                    FileOutputStream fileStream_bal1 = context.openFileOutput("map_exchange.json", Context.MODE_PRIVATE);
+                    OutputStream fileOutputStream_bal1 = new BufferedOutputStream(fileStream_bal1);
 
-                byte[] buffer_bal1 = new byte[BUFFER_SIZE];
-                int bytesRead_bal1 = 0;
+                    byte[] buffer_bal1 = new byte[BUFFER_SIZE];
+                    int bytesRead_bal1 = 0;
 
-                while (inputStream_BAL.available() == 0) {
-                    // attente
+                    while (inputStream_BAL.available() == 0) {
+                        // attente
 
-                }
-                while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
-                    if (buffer_bal1[bytesRead_bal1-1] == -128) {
-                        fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1 - 1);
-                        break;
-                    } else {
-                        fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
                     }
+                    while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
+                        if (buffer_bal1[bytesRead_bal1 - 1] == -128) {
+                            fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1 - 1);
+                            break;
+                        } else {
+                            fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+                        }
+                    }
+
+                    fileOutputStream_bal1.flush();
+                    fileOutputStream_bal1.close();
+                } catch (IOException e) {
+                    retour4 = "0";
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    retour4 = "0";
+                    e.printStackTrace();
                 }
-
-                fileOutputStream_bal1.flush();
-                fileOutputStream_bal1.close();
-
-                //  String retour3 = (message2 != null) ? "1" : "0";
 
                 // Envoie fichier Boite
 
-                FileInputStream fileStream_bal =  context.openFileInput("map.json");
-                InputStream fileInputStream_bal = new BufferedInputStream(fileStream_bal);
+                try {
+                    FileInputStream fileStream_bal = context.openFileInput("map.json");
+                    InputStream fileInputStream_bal = new BufferedInputStream(fileStream_bal);
 
-                byte[] buffer_bal = new byte[BUFFER_SIZE];
-                int bytesRead_bal = 0;
+                    byte[] buffer_bal = new byte[BUFFER_SIZE];
+                    int bytesRead_bal = 0;
 
-                while ((bytesRead_bal = fileInputStream_bal.read(buffer_bal)) != -1) {
-                    outputStream_BAL.write(buffer_bal, 0, bytesRead_bal);
+                    while ((bytesRead_bal = fileInputStream_bal.read(buffer_bal)) != -1) {
+                        outputStream_BAL.write(buffer_bal, 0, bytesRead_bal);
+                    }
+
+                    outputStream_BAL.write(-128);
+                    Log.d("Fichier - Envoi - Client", "C'est bon");
+                    outputStream_BAL.flush();
+                    fileInputStream_bal.close();
+                } catch (IOException e) {
+                    retour2 = "0";
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    retour2 = "0";
+                    e.printStackTrace();
                 }
-
-                outputStream_BAL.write(-128);
-                Log.d("Fichier - Envoi - Client","C'est bon");
-                outputStream_BAL.flush();
-                fileInputStream_bal.close();
-
-              //   String retour4 = (messageRecu2 != null) ? "1" : "0";
 
                 // Ouverture de la page de sychronisation
                 writeToView("Serveur : Redirection", Color.BLUE);
 
                 System.out.println("-- Serveur : Redirection --");
 
+                String deviceRetour = retour1 + retour2 + retour3 + retour4;
 
                 // Créer un Bundle pour stocker les informations de l'appareil sélectionné
                 Bundle bundle = new Bundle();
                 bundle.putString("deviceName", deviceName);
                 bundle.putString("deviceAddress", deviceAddress);
                 bundle.putString("deviceRole", "serveur");
-                bundle.putString("deviceRetour", "1111");
+                bundle.putString("deviceRetour", deviceRetour);
 
                 try{
                     // Créer une instance du fragment destination et lui transmettre les informations

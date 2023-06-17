@@ -89,7 +89,7 @@ public class ExchangeSynchroFragment extends Fragment {
             Toast.makeText(requireContext(), "Erreur : Le bundle est null", Toast.LENGTH_SHORT).show();
         }
 
-        if(deviceRole == "client") {
+        if (deviceRole == "client") {
 
             BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
 
@@ -97,133 +97,152 @@ public class ExchangeSynchroFragment extends Fragment {
                 this.socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
                 this.socket.connect();
                 try {
+                    String retour1 = "1";
+                    String retour2 = "1";
+                    String retour3 = "1";
+                    String retour4 = "1";
+
                     InputStream inputStream = this.socket.getInputStream();
                     OutputStream outputStream = this.socket.getOutputStream();
 
                     InputStream inputStream_BAL = this.socket.getInputStream();
                     OutputStream outputStream_BAL = this.socket.getOutputStream();
 
-
-                    // Envoyer le fichier message
-                    FileInputStream fileStream1 = getContext().openFileInput("messages.json");
-                    InputStream fileInputStream = new BufferedInputStream(fileStream1);
-
-
-                    String result = "";
                     try {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
-                        StringWriter writer = new StringWriter();
+                        // Envoyer le fichier message
+                        FileInputStream fileStream1 = getContext().openFileInput("messages.json");
+                        InputStream fileInputStream = new BufferedInputStream(fileStream1);
 
-                        char[] buffer = new char[4096];
-                        int bytesRead;
-                        while ((bytesRead = reader.read(buffer)) != -1) {
-                            writer.write(buffer, 0, bytesRead);
+
+                        String result = "";
+                        try {
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+                            StringWriter writer = new StringWriter();
+
+                            char[] buffer = new char[4096];
+                            int bytesRead;
+                            while ((bytesRead = reader.read(buffer)) != -1) {
+                                writer.write(buffer, 0, bytesRead);
+                            }
+
+                            result = writer.toString();
+                        } catch (IOException e) {
+                            retour1 = "0";
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            retour1 = "0";
+                            e.printStackTrace();
                         }
 
-                        result = writer.toString();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        outputStream.write(result.getBytes());
+                        outputStream.write(-128);
+                        outputStream.flush();
+                        fileInputStream.close();
+                    } catch (Exception e) {
+                        retour1 = "0";
                     }
 
-                    outputStream.write(result.getBytes());
-                    outputStream.write(-128);
-                    outputStream.flush();
-                    fileInputStream.close();
+                    try {
+                        // Réception fichier message
+                        FileOutputStream fileStream = getContext().openFileOutput("messages_exchange.json", Context.MODE_PRIVATE);
+                        OutputStream fileOutputStream = new BufferedOutputStream(fileStream);
+
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        int bytesRead = 0;
 
 
-                    // Si success
-                    textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
-                    textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
-                    textCheckEchangeEnvoyer.setText("\u2714");
+                        while (inputStream.available() == 0) {
+                            // on attend
+                        }
 
-                    // Réception fichier message
-                    FileOutputStream fileStream = getContext().openFileOutput("messages_exchange.json", Context.MODE_PRIVATE);
-                    OutputStream fileOutputStream = new BufferedOutputStream(fileStream);
-
-                    byte[] buffer = new byte[BUFFER_SIZE];
-                    int bytesRead = 0;
-
-
-                    while (inputStream.available() == 0) {
-                        // on attend
-                    }
-
-                    if (inputStream.available() > 0) {
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            if (buffer[bytesRead-1] == -128) {
-                                fileOutputStream.write(buffer, 0, bytesRead-1);
-                                break;
-                            } else {
-                                fileOutputStream.write(buffer, 0, bytesRead);
+                        if (inputStream.available() > 0) {
+                            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                if (buffer[bytesRead - 1] == -128) {
+                                    fileOutputStream.write(buffer, 0, bytesRead - 1);
+                                    break;
+                                } else {
+                                    fileOutputStream.write(buffer, 0, bytesRead);
+                                }
                             }
                         }
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        retour3 = "0";
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        retour3 = "0";
+                        e.printStackTrace();
                     }
-                    fileOutputStream.flush();
-                    fileOutputStream.close();
-
-
-                    // Si success
-                    textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
-                    textCheckEchangeRecu.setTextColor(Color.GREEN);
-                    textCheckEchangeRecu.setText("\u2714");
 
                     // Envoyer le fichier boite au lettre
-                    FileInputStream fileStream_bal = getContext().openFileInput("map.json");
-                    InputStream fileInputStream_bal = new BufferedInputStream(fileStream_bal);
-
                     try {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream_bal));
-                        StringWriter writer = new StringWriter();
+                        FileInputStream fileStream_bal = getContext().openFileInput("map.json");
+                        InputStream fileInputStream_bal = new BufferedInputStream(fileStream_bal);
+                        String result = "";
 
-                        char[] buffer_bal = new char[4096];
-                        int bytesRead_bal;
-                        while ((bytesRead_bal = reader.read(buffer_bal)) != -1) {
-                            writer.write(buffer_bal, 0, bytesRead_bal);
+                        try {
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream_bal));
+                            StringWriter writer = new StringWriter();
+
+                            char[] buffer_bal = new char[4096];
+                            int bytesRead_bal;
+                            while ((bytesRead_bal = reader.read(buffer_bal)) != -1) {
+                                writer.write(buffer_bal, 0, bytesRead_bal);
+                            }
+
+                            result = writer.toString();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
 
-                        result = writer.toString();
+                        outputStream_BAL.write(result.getBytes());
+                        outputStream_BAL.write(-128);
+                        outputStream_BAL.flush();
+                        fileInputStream_bal.close();
                     } catch (IOException e) {
+                        retour2 = "0";
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        retour2 = "0";
                         e.printStackTrace();
                     }
 
-                    outputStream_BAL.write(result.getBytes());
-                    outputStream_BAL.write(-128);
-                    outputStream_BAL.flush();
-                    fileInputStream_bal.close();
-
-                    // Si success
-                    textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
-                    textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
-                    textCheckBoiteEnvoyer.setText("\u2714");
-
                     // Réception fichier boite au lettre
-                    FileOutputStream fileStream_bal1 = getContext().openFileOutput("map_exchange.json", Context.MODE_PRIVATE);
-                    OutputStream fileOutputStream_bal1 = new BufferedOutputStream(fileStream_bal1);
+                    try {
+                        FileOutputStream fileStream_bal1 = getContext().openFileOutput("map_exchange.json", Context.MODE_PRIVATE);
+                        OutputStream fileOutputStream_bal1 = new BufferedOutputStream(fileStream_bal1);
 
-                    byte[] buffer_bal1 = new byte[BUFFER_SIZE];
-                    int bytesRead_bal1 = 0;
+                        byte[] buffer_bal1 = new byte[BUFFER_SIZE];
+                        int bytesRead_bal1 = 0;
 
-                    while (inputStream_BAL.available() == 0) {
-                        // on attend
-                    }
+                        while (inputStream_BAL.available() == 0) {
+                            // on attend
+                        }
 
-                    if (inputStream_BAL.available() > 0) {
-                        while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
-                            if (buffer_bal1[bytesRead_bal1-1] == -128) {
-                                fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1-1);
-                                break;
-                            } else {
-                                fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
+                        if (inputStream_BAL.available() > 0) {
+                            while ((bytesRead_bal1 = inputStream_BAL.read(buffer_bal1)) != -1) {
+                                if (buffer_bal1[bytesRead_bal1 - 1] == -128) {
+                                    fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1 - 1);
+                                    break;
+                                } else {
+                                    fileOutputStream_bal1.write(buffer_bal1, 0, bytesRead_bal1);
 
+                                }
                             }
                         }
+                        fileOutputStream_bal1.flush();
+                        fileOutputStream_bal1.close();
+                    } catch (IOException e) {
+                        retour4 = "0";
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        retour4 = "0";
+                        e.printStackTrace();
                     }
-                    fileOutputStream_bal1.flush();
-                    fileOutputStream_bal1.close();
 
-                    textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
-                    textCheckBoiteRecu.setTextColor(Color.GREEN);
-                    textCheckBoiteRecu.setText("\u2714");
+                    deviceRetour = retour1 + retour2 + retour3 + retour4;
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -236,48 +255,42 @@ public class ExchangeSynchroFragment extends Fragment {
                 retour();
             }
         }
-        if(deviceRole == "serveur") {
-            Toast.makeText(requireContext(), deviceRetour, Toast.LENGTH_SHORT).show();
-            System.out.println(deviceRetour);
-            if(deviceRetour.charAt(0) == '1'){
-                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
-                textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
-                textCheckEchangeEnvoyer.setText("\u2714");
-            } else {
-                textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
-                textCheckEchangeEnvoyer.setTextColor(Color.RED);
-                textCheckEchangeEnvoyer.setText("\u274C");
-            }
 
-            if(deviceRetour.charAt(1) == '1'){
-                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
-                textCheckEchangeRecu.setTextColor(Color.GREEN);
-                textCheckEchangeRecu.setText("\u2714");
-            } else {
-                textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
-                textCheckEchangeRecu.setTextColor(Color.RED);
-                textCheckEchangeRecu.setText("\u274C");
-            }
+        textCheckEchangeEnvoyer = root.findViewById(R.id.textCheckEchangeEnvoyerTag);
+        textCheckEchangeRecu = root.findViewById(R.id.textCheckEchangeRecuTag);
+        textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
+        textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
 
-            if(deviceRetour.charAt(2) == '1'){
-                textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
-                textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
-                textCheckBoiteEnvoyer.setText("\u2714");
-            } else {
-                textCheckBoiteEnvoyer = root.findViewById(R.id.textCheckBoiteEnvoyerTag);
-                textCheckBoiteEnvoyer.setTextColor(Color.RED);
-                textCheckBoiteEnvoyer.setText("\u274C");
-            }
+        if (deviceRetour.charAt(0) == '1') {
+            textCheckEchangeEnvoyer.setTextColor(Color.GREEN);
+            textCheckEchangeEnvoyer.setText("\u2714");
+        } else {
+            textCheckEchangeEnvoyer.setTextColor(Color.RED);
+            textCheckEchangeEnvoyer.setText("\u274C");
+        }
 
-            if(deviceRetour.charAt(3) == '1'){
-                textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
-                textCheckBoiteRecu.setTextColor(Color.GREEN);
-                textCheckBoiteRecu.setText("\u2714");
-            } else {
-                textCheckBoiteRecu = root.findViewById(R.id.textCheckBoiteRecuTag);
-                textCheckBoiteRecu.setTextColor(Color.RED);
-                textCheckBoiteRecu.setText("\u274C");
-            }
+        if (deviceRetour.charAt(2) == '1') {
+            textCheckEchangeRecu.setTextColor(Color.GREEN);
+            textCheckEchangeRecu.setText("\u2714");
+        } else {
+            textCheckEchangeRecu.setTextColor(Color.RED);
+            textCheckEchangeRecu.setText("\u274C");
+        }
+
+        if (deviceRetour.charAt(1) == '1') {
+            textCheckBoiteEnvoyer.setTextColor(Color.GREEN);
+            textCheckBoiteEnvoyer.setText("\u2714");
+        } else {
+            textCheckBoiteEnvoyer.setTextColor(Color.RED);
+            textCheckBoiteEnvoyer.setText("\u274C");
+        }
+
+        if (deviceRetour.charAt(3) == '1') {
+            textCheckBoiteRecu.setTextColor(Color.GREEN);
+            textCheckBoiteRecu.setText("\u2714");
+        } else {
+            textCheckBoiteRecu.setTextColor(Color.RED);
+            textCheckBoiteRecu.setText("\u274C");
         }
 
         Button mBtnSuivant = root.findViewById(R.id.BtnSuivant);
@@ -289,8 +302,6 @@ public class ExchangeSynchroFragment extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         });
-
-
         return root;
     }
 
@@ -306,7 +317,7 @@ public class ExchangeSynchroFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        Log.d("Destruction vue","Oui");
+        Log.d("Destruction vue", "Oui");
         super.onDestroyView();
         binding = null;
 
