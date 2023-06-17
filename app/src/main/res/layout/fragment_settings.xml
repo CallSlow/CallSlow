@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         android:text="Pseudo"
         android:textColor="@color/colorMasterText"
         android:textSize="16sp"
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginLeft="10dp"
         android:ems="10"
         android:hint="Pseudo"
         android:inputType="textPersonName"
@@ -35,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginLeft="10dp"
         android:text="Identifiant"
         android:textColor="@color/colorMasterText"
         android:textSize="16sp"
@@ -48,52 +51,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginLeft="10dp"
         android:ems="10"
         android:hint="Adresse MAC"
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@+id/labelMacAddress"
         tools:layout_editor_absoluteX="61dp" />
 
-    <TextView
-        android:id="@+id/labelFilePath"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Emplacement des fichiers"
-        android:textColor="@color/colorMasterText"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.118"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myPseudo" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="Gestion des fichier de l'application"
-        android:textColor="#673AB7"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.141"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/filePath"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Chemin : fichier/sauvegarde/SlowChat"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.099"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
     <Button
         android:id="@+id/saveSettingsButton"
         android:layout_width="200dp"
+        android:layout_marginLeft="10dp"
         android:layout_height="50dp"
         android:text="Enregistrer" />
 
