@@ -57,12 +57,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        File[] files = new File[5];
+        File[] files = new File[4];
         files[0] = new File(this.getFilesDir(), "map.json");
         files[1] = new File(this.getFilesDir(), "messages.json");
         files[2] = new File(this.getFilesDir(), "settings.json");
         files[3] = new File(this.getFilesDir(), "contacts.json");
-        files[4] = new File(this.getFilesDir(), "statistiques.json");
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
 

@@ -1,6 +1,5 @@
 package com.example.callslow.objects;
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,12 +9,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-
-import com.example.callslow.objects.Settings;
 
 public class Comparaison {
     private Context context = null;
@@ -55,6 +50,32 @@ public class Comparaison {
             e.printStackTrace();
         }
         return json;
+    }
+
+    public int[] getStatGlobales(JSONArray list, String property) {
+        int amReceiver = 0;
+        int amSender = 0;
+
+        try {
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject jsonObject = list.getJSONObject(i);
+                String receiverMAC = jsonObject.optString("receiverMac", "");
+                String senderMAC = jsonObject.optString("senderMac", "");
+
+                if (receiverMAC.equals(property)) {
+                    amReceiver++;
+                }
+
+                if (senderMAC.equals(property)) {
+                    amSender++;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return new int[]{amSender, amReceiver};
+
     }
 
     public JSONArray getNewValues(JSONArray list1, JSONArray list2, String[] properties) {
@@ -97,7 +118,7 @@ public class Comparaison {
         return newValue;
     }
 
-    public String writeJSONArrayToFile(String param, JSONArray oldArray, JSONArray newArray, String pathFile) throws IOException, JSONException {
+    public JSONObject writeJSONArrayToFile(String param, JSONArray oldArray, JSONArray newArray, String pathFile) throws IOException, JSONException {
         JSONObject obj = new JSONObject();
 
         for (int i = 0; i < newArray.length(); i++) {
@@ -110,7 +131,28 @@ public class Comparaison {
         String jsonString = obj.toString();
         fileOutputStream.write(jsonString.getBytes());
         fileOutputStream.close();
-        return jsonString;
+        return obj;
+    }
+
+    public int[] countByReceiver(JSONArray jsonArray, String property) {
+        int amReceiver = 0;
+        int amNotReceiver = 0;
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String receiverMAC = jsonObject.optString("receiverMac", "");
+                if (receiverMAC.equals(property)) {
+                    amReceiver++;
+                } else {
+                    amNotReceiver++;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return new int[]{amReceiver, amNotReceiver};
     }
 
 }

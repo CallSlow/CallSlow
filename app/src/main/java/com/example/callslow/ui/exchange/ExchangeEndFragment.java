@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,9 @@ public class ExchangeEndFragment extends Fragment {
     protected int nbMessagesEnvoyes = 0;
     protected int nbPointsEnvoyes = 0;
     protected String myMacAdress = "";
+    protected String deviceAddress;
+    protected int[] generalValues;
+    protected int[] statisticValues;
 
 
     ListView mListView;
@@ -67,12 +71,16 @@ public class ExchangeEndFragment extends Fragment {
                 JSONArray array_json2 = message_json2.getJSONArray("messages");
 
                 JSONArray finalArray = compare.getNewValues(array_json1, array_json2, new String[]{"uuid"});
-                Log.d("Affichage du tableau final", finalArray.toString());
+                Log.d("Affichagstae du tableau final", finalArray.toString());
 
                 this.nbMessagesEnvoyes=finalArray.length();
 
                 String param = "messages";
-                compare.writeJSONArrayToFile(param, array_json1, finalArray, "messages.json");
+                this.generalValues = compare.countByReceiver(finalArray, myMacAdress);
+
+                JSONObject completeObject = compare.writeJSONArrayToFile(param, array_json1, finalArray, "messages.json");
+                JSONArray completeArray = completeObject.getJSONArray("messages");
+                this.statisticValues = compare.getStatGlobales(completeArray, myMacAdress);
             }
             else if (!message_json1.has("messages") && message_json2.has("messages")) {
                 String param = "messages";
@@ -80,7 +88,19 @@ public class ExchangeEndFragment extends Fragment {
                 // Ajouter le tableau "messages" à l'objet JSON
                 message_json1.put("messages", messagesArray);
                 JSONArray array_json = message_json2.getJSONArray("messages");
-                compare.writeJSONArrayToFile(param, messagesArray, array_json, "messages.json");
+
+                this.nbMessagesEnvoyes = array_json.length();
+                this.generalValues = compare.countByReceiver(array_json, myMacAdress);
+
+                JSONObject completeObject = compare.writeJSONArrayToFile(param, messagesArray, array_json, "messages.json");
+                JSONArray completeArray = completeObject.getJSONArray("messages");
+                this.statisticValues = compare.getStatGlobales(completeArray, myMacAdress);
+            }
+            else {
+                this.generalValues[0] = 0;
+                this.generalValues[1] = 0;
+                this.statisticValues[0] = 0;
+                this.statisticValues[1] = 0;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -108,14 +128,16 @@ public class ExchangeEndFragment extends Fragment {
                 Log.d("Affichage du tableau final", finalArray.toString());
                 this.nbPointsEnvoyes = finalArray.length();
                 String param = "point";
-
                 compare.writeJSONArrayToFile(param, array_json3, finalArray, "map.json");
+
             } else if (!message_json3.has("point") && message_json4.has("point")) {
                 JSONArray messagesArray = new JSONArray();
                 // Ajouter le tableau "messages" à l'objet JSON
                 message_json3.put("point", messagesArray);
                 JSONArray array_json = message_json4.getJSONArray("point");
                 String param = "point";
+
+                this.nbPointsEnvoyes = array_json.length();
                 compare.writeJSONArrayToFile(param, messagesArray, array_json, "map.json");
             }
 
@@ -123,13 +145,18 @@ public class ExchangeEndFragment extends Fragment {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        };
+
+
 
         TextView textMessages = root.findViewById(R.id.text_messages_envoyes);
         TextView textPoints = root.findViewById(R.id.text_points_envoyes);
+        TextView textStatGlobales = root.findViewById(R.id.text_statistiques_globales);
 
-        textMessages.setText("Nombres de messages reçus : " + this.nbMessagesEnvoyes);
-        textPoints.setText("Nombre de points sur la carte reçus : " + this.nbPointsEnvoyes);
+        textMessages.setText("Nombre de message(s) reçu(s) : " + this.nbMessagesEnvoyes);
+        textPoints.setText("Nombre de point(s) sur la carte reçu(s) : " + this.nbPointsEnvoyes);
+        textStatGlobales.setText("Cet appareil est porteur de " + this.generalValues[0] +" message(s) qui me sont destinés et "+ this.generalValues[1] +" qui sont destinés à d'autres personnes. J'ai envoyé avec mon appareil au total "+ this.statisticValues[0] +" message(s) et reçu "+ this.statisticValues[1] +" message(s)."
+);
 
         Button mBtnRetour;
         mBtnRetour = root.findViewById(R.id.buttonEnd);

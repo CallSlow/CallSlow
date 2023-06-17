@@ -332,9 +332,6 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         String deviceName = selected.getName();
         String deviceAddress = selected.getAddress();
 
-        System.out.println(deviceName);
-        System.out.println(deviceAddress);
-
         // Créer un Bundle pour stocker les informations de l'appareil sélectionné
         Bundle bundle = new Bundle();
         bundle.putString("deviceName", deviceName);
