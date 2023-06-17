@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Nombre de messages reçus : ?"
+                android:text="Nombre de messages reçus : 0"
                 />
 
             <TextView
@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Nombre de points sur la carte reçus : ?"
+                android:text="Nombre de points sur la carte reçus : 0"
                 />
 
         </LinearLayout>
@@ -177,10 +177,11 @@
                 android:textColor="#9e00c1"
                 />
             <TextView
+                android:id="@+id/text_statistiques_globales"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cet appareil est porteur de ? messages qui me sont destinés et ? qui sont destinés à d'autres personnes. Mon appareil a échangé en tout ? fois et a été en contact avec ? personnes."
+                android:text="Cet appareil est porteur de 0 messages qui me sont destinés et 0 qui sont destinés à d'autres personnes. Mon appareil a échangé en tout 0 fois et a été en contact avec 0 personnes."
                 />
 
 

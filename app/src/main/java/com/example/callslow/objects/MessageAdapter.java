@@ -66,11 +66,9 @@ public class MessageAdapter extends BaseAdapter {
 
             TextView sendingDateContentView = convertView.findViewById(R.id.text_timestamp_sender);
             TextView messageContentView = convertView.findViewById(R.id.text_message_sender);
-            TextView senderNameView = convertView.findViewById(R.id.text_user_sender);
 
             sendingDateContentView.setText(message.getSendingDate());
             messageContentView.setText(message.getContent());
-            senderNameView.setText(message.getSenderMac());
         }
         return convertView;
     }
