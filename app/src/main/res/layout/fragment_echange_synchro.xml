@@ -149,82 +149,11 @@
 
         </LinearLayout>
 
+
         <LinearLayout
-            android:id="@+id/LinearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/LinearLayout2"
-            android:layout_margin="15dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Enregistrement et sélection des messages à sauvegarder"
-                    android:textColor="#9e00c1"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView6"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:textColor="#FFFFFF">
-
-                    <TextView
-                        android:id="@+id/textView20"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sélection des nouveaux messages pour d'autres"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/textView21"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sélection des nouveaux messages pour vous"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/textView22"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sélection des accusés de réception"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/textView23"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Suppression des messages arrivés"
-
-                        />
-
-
-                </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/LinearLayout3"
             android:orientation="horizontal">
 
             <Space
