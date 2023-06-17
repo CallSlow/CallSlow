@@ -118,6 +118,19 @@ public class Messages extends Application {
         writeFile();
     }
 
+    public void setMessagesContact (String oldValue, String value) throws Exception {
+        for (Message m : message_list) {
+            if (m.getSenderMac().equals(oldValue)) {
+                m.setSenderMac(value);
+            }
+
+            if(m.getReceiverMac().equals(oldValue)) {
+                m.setReceiverMac(value);
+            }
+        }
+        writeFile();
+    }
+
     public ArrayList<Message> getMessages() {
         return new ArrayList<Message>(message_list);
     }

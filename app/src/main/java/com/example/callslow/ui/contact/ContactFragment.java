@@ -27,6 +27,7 @@ import com.example.callslow.databinding.FragmentContactBinding;
 import com.example.callslow.objects.Contact;
 import com.example.callslow.objects.ContactAdapter;
 import com.example.callslow.objects.Contacts;
+import com.example.callslow.objects.Messages;
 
 import org.w3c.dom.Text;
 
@@ -38,6 +39,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
     private SearchView mSearchView;
     private ContactAdapter mAdapter;
     private ArrayList<Contact> mContactList;
+    private ArrayList<Messages> mMessagesList;
 
     private Button addContactBtn, createContactBtn;
     private EditText nameInput, macInput;
@@ -74,6 +76,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         Contacts.getInstance().init(getContext());
         mContactList = Contacts.getInstance().getContacts();
 
+        Messages.getInstance().init(getContext());
         //mContactList = new ArrayList<>();
 
 
@@ -150,6 +153,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
                 }
             } else {
                 Contacts.getInstance().replaceContact(editing, newContact);
+                Messages.getInstance().setMessagesContact(editing.getMac(), newContact.getMac());
                 editing = null;
             }
 
