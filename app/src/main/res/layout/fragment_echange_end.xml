@@ -97,15 +97,6 @@
                     />
 
                 <TextView
-                    android:id="@+id/textView22"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sélection des accusés de réception"
-
-                    />
-
-                <TextView
                     android:id="@+id/textView23"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -139,21 +130,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Statistique lièes à l'échange"
+                android:text="Statistiques liées à l'échange"
                 android:textStyle="bold"
                 android:textColor="#9e00c1"
                 />
             <TextView
+                android:id="@+id/text_messages_envoyes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Message envoyés : 12"
+                android:text="Nombre de messages reçus : ?"
                 />
+
             <TextView
+                android:id="@+id/text_points_envoyes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Message réçus : 12"
+                android:text="Nombre de points sur la carte reçus : ?"
                 />
 
         </LinearLayout>
@@ -178,7 +172,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Statistique globale"
+                android:text="Statistiques globales"
                 android:textStyle="bold"
                 android:textColor="#9e00c1"
                 />
@@ -186,7 +180,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cet appareil est porteur de 85 messages qui doivent être reçus. Cet appareil est porteur de 25 accusés de reception."
+                android:text="Cet appareil est porteur de ? messages qui me sont destinés et ? qui sont destinés à d'autres personnes. Mon appareil a échangé en tout ? fois et a été en contact avec ? personnes."
                 />
 
 

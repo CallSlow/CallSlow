@@ -57,13 +57,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        File file_maps = new File(this.getFilesDir(), "map.json");
+        File[] files = new File[5];
+        files[0] = new File(this.getFilesDir(), "map.json");
+        files[1] = new File(this.getFilesDir(), "messages.json");
+        files[2] = new File(this.getFilesDir(), "settings.json");
+        files[3] = new File(this.getFilesDir(), "contacts.json");
+        files[4] = new File(this.getFilesDir(), "statistiques.json");
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
 
-        if (!file_maps.exists()) {
-            try {
-                this.createFile(file_maps);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!file.exists()) {
+                try {
+                    this.createFile(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -118,9 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void createFile(File file) throws IOException {
         file.createNewFile();
-
         JSONObject jsonObject = new JSONObject();
-
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(jsonObject.toString());
         fileWriter.flush();

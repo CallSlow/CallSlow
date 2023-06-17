@@ -40,8 +40,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.callslow.MainActivity;
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentEchangeMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.transition.MaterialSharedAxis;
 
 import java.io.IOException;
@@ -165,6 +167,11 @@ public class ExchangeFragment extends Fragment implements AdapterView.OnItemClic
         ExchangeViewModel exchangeViewModel = new ViewModelProvider(this).get(ExchangeViewModel.class);
         binding = FragmentEchangeMainBinding.inflate(inflater, container, false);
         root = binding.getRoot();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        BottomNavigationView navView = mainActivity.findViewById(R.id.nav_view);
+        navView.setEnabled(true);
+        navView.setVisibility(View.VISIBLE);
 
         // Demande la permission Bluetooth
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
