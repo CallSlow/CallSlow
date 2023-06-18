@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.callslow.R;
 import com.example.callslow.databinding.FragmentSettingsBinding;
+import com.example.callslow.objects.Messages;
 import com.example.callslow.objects.Settings;
 
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         Settings settings = Settings.getInstance();
+        Messages.getInstance().init(getContext());
+
 
         settings.init(getContext());
         settingslist = settings.getSettings();
@@ -59,26 +63,31 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         EditText editPseudo = binding.myPseudo;
         EditText editMacAddress = binding.myMacAddress;
+        String oldMac = Settings.getInstance().getSettings().get(0);
+
         try {
-            if (!editMacAddress.getText().toString().matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")) {
-                alertBox("Adrese MAC Invalide", "Le format de l'adresse MAC saisie est invalide.");
+            if (editPseudo.getText().toString().equals("")) {
+                alertBox("Pseudo Invalide", "Veuillez saisir un pseudo.");
                 return;
             } else {
                 Settings.getInstance().changePseudo(editPseudo.getText().toString());
             }
 
-            if (editPseudo.getText().toString().equals("")) {
-                alertBox("Pseudo Invalide", "Veuillez saisir un pseudo.");
+            if (!editMacAddress.getText().toString().matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")) {
+                alertBox("Adresse MAC Invalide", "Le format de l'adresse MAC saisie est invalide.");
                 return;
             } else {
                 Settings.getInstance().changeMacAddress(editMacAddress.getText().toString());
+                alertBox("Modification des settings", "Enregistrement effectué");
+                if (oldMac.length() != 0 && oldMac.equals("02:00:00:00:00:00")) {
+                    Messages.getInstance().setMessagesContact(oldMac, editMacAddress.getText().toString());
+                }
             }
 
-            alertBox("Modification des settings", "Enregistrement effectué");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
