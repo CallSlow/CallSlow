@@ -95,8 +95,9 @@ public class MapsFragment extends Fragment implements OnClickListener {
         //Personnalisation de la carte
         IMapController mapController = map.getController();
 
-        //Zoom par défaut de la carte
-        mapController.setZoom(18.0);
+        mapController.setZoom(17.0); // Définit le zoom par défaut à 16
+        map.setMaxZoomLevel(17.0); // Définit la plage de zoom autorisée entre 10 et 16
+        map.setMinZoomLevel(9.0);
 
         //On applique le point de départ défini au dessus comme le point au centre de la carte
         mapController.setCenter(startPoint);
