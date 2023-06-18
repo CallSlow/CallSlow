@@ -1,50 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/conversation_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Le fonctionnement des boîtes aux lettres 📬"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textColor="@android:color/darker_gray"
-        android:textStyle="bold" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:id="@+id/conversation_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Le fonctionnement des boîtes aux lettres 📬"
+            android:textColor="@android:color/darker_gray"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_title"
-        android:textColor="@android:color/darker_gray"
-        android:text="Les boîtes aux lettres sont des équipements (Raspberry Pi, téléphone...) mises à disposition des utilisateurs CallSlow pour permettre un transfert de messages plus efficace.  "
-        android:layout_marginTop="20sp"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textView_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_title"
+            android:text="Les boîtes aux lettres sont des équipements (Raspberry Pi, téléphone...) mises à disposition des utilisateurs CallSlow pour permettre un transfert de messages plus efficace.  "
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="20sp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView_name2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_name"
-        android:layout_marginTop="20sp"
-        android:textColor="@android:color/darker_gray"
-        android:text="La carte vous permet de visualiser les boîtes aux lettres disponibles proche de chez vous via un échange de données avec un autre utilisateur ou alors via le bouton \' 📬 + \'. Ce bouton vous permet de créer votre propre boîte aux lettres en spécifiant un titre (le type d'équipement par exemple), une description (l'adresse précise, une indication sur le lieu ou est rangé la boîte aux lettres...) ainsi que les coordonnées de la boite aux lettres. Elles sont calculées automatiquement en fonction du centre de la carte."
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textView_name2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_name"
+            android:layout_marginTop="20sp"
+            android:textColor="@android:color/darker_gray"
+            android:text="La carte vous permet de visualiser les boîtes aux lettres disponibles proche de chez vous via un échange de données avec un autre utilisateur ou alors via le bouton \' 📬 + \'. Ce bouton vous permet de créer votre propre boîte aux lettres en spécifiant un titre (le type d'équipement par exemple), une description (l'adresse précise, une indication sur le lieu ou est rangé la boîte aux lettres...) ainsi que les coordonnées de la boite aux lettres. Elles sont calculées automatiquement en fonction du centre de la carte."
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView_name3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_name2"
-        android:layout_marginTop="20sp"
-        android:textColor="@android:color/darker_gray"
-        android:text="Si une boîte aux lettres n'existe plus, vous avez la possibilité de la supprimer en faisant un appui long (2 secondes) sur le marqueur de la boîte aux lettres. Celui-ci sera ainsi définitivement supprimé."
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textView_name3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_name2"
+            android:layout_marginTop="20sp"
+            android:textColor="@android:color/darker_gray"
+            android:text="Si une boîte aux lettres n'existe plus, vous avez la possibilité de la supprimer en faisant un appui long (2 secondes) sur le marqueur de la boîte aux lettres. Celui-ci sera ainsi définitivement supprimé."
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-</RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>

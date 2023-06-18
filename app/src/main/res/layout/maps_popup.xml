@@ -1,118 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/conversation_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="📬 Ajout d'une nouvelle boîte aux lettres"
-        android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/textView_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_title"
-        android:text="Nom de la boîte aux lettres :"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginTop="20sp"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/editText_name"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_name"
-        android:background="@drawable/edit_text_background"
-        android:hint="Entrez un nom"
-        android:textColor="@android:color/darker_gray"
-        android:padding="10dp"
-        android:textSize="16sp" />
+        android:layout_height="0dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:id="@+id/conversation_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textView_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editText_name"
-        android:layout_marginTop="10sp"
-        android:textColor="@android:color/darker_gray"
-        android:text="Description :"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📬 Ajout d'une nouvelle boîte aux lettres"
+            android:textAlignment="center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/editText_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_description"
-        android:background="@drawable/edit_text_background"
-        android:hint="Ajoutez des détails"
-        android:inputType="textEmailAddress"
-        android:textColor="@android:color/darker_gray"
-        android:padding="10dp"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/textView_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_title"
+            android:text="Nom de la boîte aux lettres :"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="20sp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView_latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editText_description"
-        android:layout_marginTop="10sp"
-        android:text="Latitude :"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/editText_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_name"
+            android:background="@drawable/edit_text_background"
+            android:hint="Entrez un nom"
+            android:textColor="@android:color/darker_gray"
+            android:padding="10dp"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/editText_latitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_latitude"
-        android:background="@drawable/edit_text_background"
-        android:hint="Entrez la latitude"
-        android:inputType="textEmailAddress"
-        android:textColor="@android:color/darker_gray"
-        android:padding="10dp"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/textView_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText_name"
+            android:layout_marginTop="10sp"
+            android:textColor="@android:color/darker_gray"
+            android:text="Description :"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView_longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editText_latitude"
-        android:layout_marginTop="10sp"
-        android:text="Longitude :"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/editText_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_description"
+            android:background="@drawable/edit_text_background"
+            android:hint="Ajoutez des détails (adresse précise, équipement...)"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/darker_gray"
+            android:padding="10dp"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/editText_longitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_longitude"
-        android:background="@drawable/edit_text_background"
-        android:hint="Entrez la longitude"
-        android:inputType="textEmailAddress"
-        android:textColor="@android:color/darker_gray"
-        android:padding="10dp"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/textView_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText_description"
+            android:layout_marginTop="10sp"
+            android:text="Latitude :"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editText_longitude"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="15dp"
-        android:text="Envoyer"
-        android:textSize="18sp" />
+        <EditText
+            android:id="@+id/editText_latitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_latitude"
+            android:background="@drawable/edit_text_background"
+            android:hint="Entrez la latitude"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/darker_gray"
+            android:padding="10dp"
+            android:textSize="16sp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/textView_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText_latitude"
+            android:layout_marginTop="10sp"
+            android:text="Longitude :"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_longitude"
+            android:background="@drawable/edit_text_background"
+            android:hint="Entrez la longitude"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/darker_gray"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText_longitude"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:text="Envoyer"
+            android:textSize="18sp" />
+
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>
