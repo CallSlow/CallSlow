@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         files[3] = new File(this.getFilesDir(), "contacts.json");
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
-
             if (!file.exists()) {
                 try {
                     this.createFile(file);
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-
             Messages.getInstance().deleteMessagesDate();
         } catch (Exception e) {
             e.printStackTrace();

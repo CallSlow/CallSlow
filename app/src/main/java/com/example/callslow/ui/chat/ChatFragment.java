@@ -68,7 +68,7 @@ public class ChatFragment extends Fragment implements AdapterView.OnItemClickLis
 
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.list_fragment, conversationFragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("chatFragment");
         transaction.commit();
     }
 }

@@ -170,7 +170,7 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         this.actionBar.setTitle(getString(R.string.title_chat));
         this.actionBar.setDisplayHomeAsUpEnabled(false);
-        requireActivity().getSupportFragmentManager().popBackStack();
+        requireActivity().getSupportFragmentManager().popBackStack("chatFragment",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         return true;
     }
 }
