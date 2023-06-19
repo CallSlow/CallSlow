@@ -126,11 +126,11 @@ public class Messages extends Application {
 
     public void setMessagesContact (String oldValue, String value) throws Exception {
         for (Message m : message_list) {
-            if (m.getSenderMac().equals(oldValue)) {
+            if (m.getSenderMac().equalsIgnoreCase(oldValue)) {
                 m.setSenderMac(value);
             }
 
-            if(m.getReceiverMac().equals(oldValue)) {
+            if(m.getReceiverMac().equalsIgnoreCase(oldValue)) {
                 m.setReceiverMac(value);
             }
         }

@@ -76,8 +76,8 @@ public class ConversationFragment extends Fragment implements View.OnClickListen
         settingslist = Settings.getInstance().getSettings();
         settingslist = Settings.getInstance().getSettings();
         for (Message msg: messages.getMessages()) {
-            if (msg.getSenderMac().equals(settingslist.get(0)) || msg.getReceiverMac().equals(settingslist.get(0))) {
-                if (msg.getSenderMac().equals(mac_adress) || msg.getReceiverMac().equals(mac_adress)) {
+            if (msg.getSenderMac().equalsIgnoreCase(settingslist.get(0)) || msg.getReceiverMac().equalsIgnoreCase(settingslist.get(0))) {
+                if (msg.getSenderMac().equalsIgnoreCase(mac_adress) || msg.getReceiverMac().equalsIgnoreCase(mac_adress)) {
                     mMessageList.add(msg);
                 }
             }

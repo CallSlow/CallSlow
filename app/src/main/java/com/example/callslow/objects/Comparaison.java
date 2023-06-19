@@ -62,11 +62,11 @@ public class Comparaison {
                 String receiverMAC = jsonObject.optString("receiverMac", "");
                 String senderMAC = jsonObject.optString("senderMac", "");
 
-                if (receiverMAC.equals(property)) {
+                if (receiverMAC.equalsIgnoreCase(property)) {
                     amReceiver++;
                 }
 
-                if (senderMAC.equals(property)) {
+                if (senderMAC.equalsIgnoreCase(property)) {
                     amSender++;
                 }
             }
@@ -95,7 +95,7 @@ public class Comparaison {
 
                         if (jsonObject1 != null && jsonObject2 != null) {
                             for (String property : properties) {
-                                if (!jsonObject1.optString(property).equals(jsonObject2.optString(property))) {
+                                if (!jsonObject1.optString(property).equalsIgnoreCase(jsonObject2.optString(property))) {
                                     equal = false;
                                     break;
                                 }
@@ -142,7 +142,7 @@ public class Comparaison {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String receiverMAC = jsonObject.optString("receiverMac", "");
-                if (receiverMAC.equals(property)) {
+                if (receiverMAC.equalsIgnoreCase(property)) {
                     amReceiver++;
                 } else {
                     amNotReceiver++;

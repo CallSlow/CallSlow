@@ -77,10 +77,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 alertBox("Adresse MAC Invalide", "Le format de l'adresse MAC saisie est invalide.");
                 return;
             } else {
-                Settings.getInstance().changeMacAddress(editMacAddress.getText().toString());
+                Settings.getInstance().changeMacAddress(editMacAddress.getText().toString().toUpperCase());
                 alertBox("Modification des settings", "Enregistrement effectué");
                 if (oldMac.length() != 0 && oldMac.equals("02:00:00:00:00:00")) {
-                    Messages.getInstance().setMessagesContact(oldMac, editMacAddress.getText().toString());
+                    Messages.getInstance().setMessagesContact(oldMac, editMacAddress.getText().toString().toUpperCase());
                 }
             }
 
